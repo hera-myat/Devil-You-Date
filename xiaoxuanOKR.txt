@@ -1,0 +1,15 @@
+Schedule and deliverable:
+
+	•Implement basic player movement controller(WASD movement and mouse camera) — Thurs by 2pm (estimate 3 hrs)
+
+	•Implement sprint mechanic (assign Shift key to increase player’s movement speed) — Thurs by 4pm (estimate 2 hrs)
+
+	•Implement crouch mechanic (assign C key to crouch) — Thurs by 5pm (estimate 1 hr)
+
+	•Implement interaction system use E key to talk or interact with NPC— Thurs by 10 pm (estimate 2 hrs)
+
+	•Implement dialogue trigger system when player presses E in front of NPC — Fri by 2 pm (estimate: 2 hrs)
+
+	•Implement clue interaction objects that player can interact with to receive hints — Fri by 5pm (estimate: 3hrs)
+
+	•Implement prototype scenes — Fri by 8pm (estimate: 4hrs)

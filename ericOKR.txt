@@ -1,0 +1,19 @@
+Schedule and Deliverables:
+
+Create base playable map in Unity using level sketch
+-- Wed by 10pm (estimate: 3 hrs)
+
+Place and organize key gameplay elements (NPC position, player spawn location)
+-- Thu by 2pm (estimate: 2 hrs)
+
+Refine layout for player navigation + clarity (clear paths, visibility of interactable elements)
+-- Thu by 4pm (estimate: 2 hrs)
+
+Implement basic on screen UI text for player feedback
+-- Thu by 10pm (estimate: 4 hrs)
+
+Create simple interaction prompts ('Press E to Talk' etc)
+-- Fri by 10am (estimate: 2 hrs)
+
+Implement minimal reveal event visuals (visual change to indicate demon transformation)
+-- Fri by 4pm (estimate: 3 hrs)
