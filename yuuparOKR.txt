@@ -1,0 +1,19 @@
+Schedule and Deliverables:
+
+Create initial level sketch design
+-- Wed by 8pm (estimate: 2 hrs)
+
+Refine for final level sketch design
+-- Wed by 10pm (estimate: 2 hrs)
+
+Set up the entire gameplay environment
+-- Thu by 10pm (estimate: 3 hrs)
+
+Implement initial gameplay resources: materials, models, prefab
+-- Thu by 10pm (estimate: 3 hrs)
+
+Implement basic interactions + UI elements
+-- Fri by 10pm (estimate: 4 hrs)
+
+Implement minimal animations
+-- Fri by 10pm (estimate: 2 hrs)
