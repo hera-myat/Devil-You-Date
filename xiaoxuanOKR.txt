@@ -12,4 +12,4 @@ Schedule and deliverable:
 
 	•Implement clue interaction objects that player can interact with to receive hints — Fri by 5pm (estimate: 3hrs)
 
-	•Implement prototype scenes — Fri by 8pm (estimate: 3hrs)
+	•Implement prototype scenes — Fri by 8pm (estimate: 4hrs)
