@@ -3,7 +3,9 @@
 --- detailed description in progress ---
 
 Project Manager: Khin Yuupar Myat
+
 Lead Developer: Xiaoxuan Zhen
+
 Lead Designer: Eric Flores
 
 ## Related Links
