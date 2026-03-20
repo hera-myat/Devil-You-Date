@@ -17,6 +17,8 @@ public class NPCInteraction : MonoBehaviour
 
     void Update()
     {
+        if (dialogueManager == null) return;
+
         if (playerInRange && !dialogueManager.isDialogueOpen)
         {
             if (Input.GetKeyDown(KeyCode.E))
@@ -32,7 +34,7 @@ public class NPCInteraction : MonoBehaviour
         {
             playerInRange = true;
 
-            if (interactionPrompt != null && !dialogueManager.isDialogueOpen)
+            if (interactionPrompt != null && dialogueManager != null && !dialogueManager.isDialogueOpen)
             {
                 interactionPrompt.SetActive(true);
             }
