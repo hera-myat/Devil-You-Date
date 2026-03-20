@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &5067788781370427551
+--- !u!1 &4602754604153049304
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,49 +8,49 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 9199577534426045870}
-  - component: {fileID: 5380002198797298948}
-  - component: {fileID: 7680150850004651472}
-  - component: {fileID: 5009424158255239938}
-  - component: {fileID: 6575442001701150876}
-  - component: {fileID: 9050413230954463763}
+  - component: {fileID: 9148286156064258756}
+  - component: {fileID: 3940527074483046050}
+  - component: {fileID: 4689217869898064754}
+  - component: {fileID: 3122818991359394445}
+  - component: {fileID: 2273647090389649099}
+  - component: {fileID: 7445266656030447262}
   m_Layer: 0
-  m_Name: Dating_person
+  m_Name: Garbage can
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &9199577534426045870
+--- !u!4 &9148286156064258756
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5067788781370427551}
+  m_GameObject: {fileID: 4602754604153049304}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 29.39, y: 3.17, z: -73.72}
-  m_LocalScale: {x: 1.22, y: 1.1999999, z: 1.1999999}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 99.41, y: 1.34, z: -22.5}
+  m_LocalScale: {x: 1, y: 2.58, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &5380002198797298948
+--- !u!33 &3940527074483046050
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5067788781370427551}
-  m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &7680150850004651472
+  m_GameObject: {fileID: 4602754604153049304}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!23 &4689217869898064754
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5067788781370427551}
+  m_GameObject: {fileID: 4602754604153049304}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -93,13 +93,13 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &5009424158255239938
+--- !u!65 &3122818991359394445
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5067788781370427551}
+  m_GameObject: {fileID: 4602754604153049304}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -112,29 +112,35 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 4, y: 2, z: 4}
-  m_Center: {x: 0.00000005960464, y: 0, z: -0.00000008940697}
---- !u!114 &6575442001701150876
+  m_Size: {x: 3, y: 2, z: 3}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &2273647090389649099
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5067788781370427551}
+  m_GameObject: {fileID: 4602754604153049304}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 661eac8cc3e8c469c954d565e120e982, type: 3}
+  m_Script: {fileID: 11500000, guid: 2c10fae879d2e46dfbe0d0ef8356f00c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NPCInteraction
-  interactionPrompt: {fileID: 0}
+  m_EditorClassIdentifier: Assembly-CSharp::SearchableObject
+  searchPrompt: {fileID: 0}
+  progressBar: {fileID: 0}
+  foundItemText: {fileID: 0}
+  searchTime: 2
+  inventorySymbol: C
+  discoveryMessage: You found a strange coin engraved with unknown symbols.
+  inventoryManager: {fileID: 0}
   dialogueManager: {fileID: 0}
---- !u!65 &9050413230954463763
+--- !u!65 &7445266656030447262
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5067788781370427551}
+  m_GameObject: {fileID: 4602754604153049304}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -147,5 +153,5 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 2, z: 1.0000002}
-  m_Center: {x: 0.00000005960464, y: 0, z: -0.00000008940697}
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
