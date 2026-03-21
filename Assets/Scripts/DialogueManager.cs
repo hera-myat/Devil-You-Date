@@ -48,6 +48,12 @@ public class DialogueManager : MonoBehaviour
     {
         if (!isDialogueOpen) return;
 
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            EndDialogue();
+            return;
+        }
+
         if (waitingForNext && Input.GetKeyDown(KeyCode.E))
         {
             AdvanceDialogue();
