@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using System.Collections;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -24,6 +25,9 @@ public class DialogueManager : MonoBehaviour
     [Header("Optional Prompt")]
     public GameObject interactionPrompt;
 
+    [Header("Typing Effect")]
+    public float typingSpeed = 0.03f;
+
     [Header("State")]
     public bool isDialogueOpen = false;
     public bool hasCoin = false;
@@ -32,6 +36,11 @@ public class DialogueManager : MonoBehaviour
     private int dialogueState = 0;
     private bool waitingForNext = false;
     private int pendingResponse = 0;
+
+    private Coroutine typingCoroutine;
+    private bool isTyping = false;
+    private string currentFullLine = "";
+    private string currentSpeaker = "";
 
     void Start()
     {
@@ -54,9 +63,18 @@ public class DialogueManager : MonoBehaviour
             return;
         }
 
-        if (waitingForNext && Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            AdvanceDialogue();
+            if (isTyping)
+            {
+                FinishTypingInstantly();
+                return;
+            }
+
+            if (waitingForNext)
+            {
+                AdvanceDialogue();
+            }
         }
     }
 
@@ -84,35 +102,16 @@ public class DialogueManager : MonoBehaviour
 
     void ShowGreeting()
     {
-        speakerText.text = "Player";
-        dialogueText.text = "Hi.";
+        HideChoices();
+        waitingForNext = true;
+        StartTyping("Player", "Hi.");
     }
 
     void AdvanceDialogue()
     {
         if (dialogueState == 0)
         {
-            speakerText.text = "Date";
-            dialogueText.text = "Hi, how's it going?";
-            dialogueState = 1;
-            waitingForNext = false;
-
-            if (hasCoin)
-            {
-                ShowChoices(
-                    "Ask about their day",
-                    "Ask about the coin",
-                    "Say goodbye"
-                );
-            }
-            else
-            {
-                ShowChoices(
-                    "Ask about their day",
-                    "Ask about their past",
-                    "Say goodbye"
-                );
-            }
+            ShowFirstNpcReply();
             return;
         }
 
@@ -159,6 +158,80 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
+    void ShowFirstNpcReply()
+    {
+        HideChoices();
+        dialogueState = 1;
+        waitingForNext = false;
+
+        if (typingCoroutine != null)
+            StopCoroutine(typingCoroutine);
+
+        typingCoroutine = StartCoroutine(TypeFirstNpcReply());
+    }
+
+    IEnumerator TypeFirstNpcReply()
+    {
+        yield return StartCoroutine(TypeLine("Date", "Hi, how's it going?"));
+
+        if (hasCoin)
+        {
+            ShowChoices(
+                "Ask about their day",
+                "Ask about the coin",
+                "Say goodbye"
+            );
+        }
+        else
+        {
+            ShowChoices(
+                "Ask about their day",
+                "Ask about their past",
+                "Say goodbye"
+            );
+        }
+    }
+
+    void StartTyping(string speaker, string line)
+    {
+        if (typingCoroutine != null)
+            StopCoroutine(typingCoroutine);
+
+        typingCoroutine = StartCoroutine(TypeLine(speaker, line));
+    }
+
+    IEnumerator TypeLine(string speaker, string line)
+    {
+        isTyping = true;
+        currentSpeaker = speaker;
+        currentFullLine = line;
+
+        speakerText.text = speaker;
+        dialogueText.text = "";
+
+        foreach (char c in line)
+        {
+            dialogueText.text += c;
+            yield return new WaitForSeconds(typingSpeed);
+        }
+
+        isTyping = false;
+        typingCoroutine = null;
+    }
+
+    void FinishTypingInstantly()
+    {
+        if (!isTyping) return;
+
+        if (typingCoroutine != null)
+            StopCoroutine(typingCoroutine);
+
+        speakerText.text = currentSpeaker;
+        dialogueText.text = currentFullLine;
+        isTyping = false;
+        typingCoroutine = null;
+    }
+
     void ShowChoices(string option1, string option2, string option3)
     {
         choiceButton1.gameObject.SetActive(true);
@@ -174,31 +247,36 @@ public class DialogueManager : MonoBehaviour
     {
         if (dialogueState == 1)
         {
-            speakerText.text = "Player";
-            dialogueText.text = "How has your day been?";
-
             HideChoices();
             waitingForNext = true;
             pendingResponse = 1;
+            StartTyping("Player", "How has your day been?");
             return;
         }
 
         if (dialogueState == 2)
         {
-            speakerText.text = "Player";
-            dialogueText.text = "It looked unusual, so I thought I'd ask.";
-
             HideChoices();
             waitingForNext = true;
             pendingResponse = 4;
+            StartTyping("Player", "It looked unusual, so I thought I'd ask.");
             return;
         }
     }
 
     void ResponseOption1()
     {
-        speakerText.text = "Date";
-        dialogueText.text = "Pretty normal. Just walking around and getting some fresh air.";
+        HideChoices();
+
+        if (typingCoroutine != null)
+            StopCoroutine(typingCoroutine);
+
+        typingCoroutine = StartCoroutine(TypeResponseOption1());
+    }
+
+    IEnumerator TypeResponseOption1()
+    {
+        yield return StartCoroutine(TypeLine("Date", "Pretty normal. Just walking around and getting some fresh air."));
 
         waitingForNext = false;
 
@@ -213,23 +291,17 @@ public class DialogueManager : MonoBehaviour
     {
         if (dialogueState == 1)
         {
+            HideChoices();
+            waitingForNext = true;
+            pendingResponse = 2;
+
             if (hasCoin)
             {
-                speakerText.text = "Player";
-                dialogueText.text = "Hey, I found this coin nearby. Is it yours?";
-
-                HideChoices();
-                waitingForNext = true;
-                pendingResponse = 2;
+                StartTyping("Player", "Hey, I found this coin nearby. Is it yours?");
             }
             else
             {
-                speakerText.text = "Player";
-                dialogueText.text = "Can you tell me a little about your past?";
-
-                HideChoices();
-                waitingForNext = true;
-                pendingResponse = 2;
+                StartTyping("Player", "Can you tell me a little about your past?");
             }
 
             return;
@@ -237,22 +309,29 @@ public class DialogueManager : MonoBehaviour
 
         if (dialogueState == 2)
         {
-            speakerText.text = "Player";
-            dialogueText.text = "Are you sure? You reacted kind of strangely.";
-
             HideChoices();
             waitingForNext = true;
             pendingResponse = 5;
+            StartTyping("Player", "Are you sure? You reacted kind of strangely.");
             return;
         }
     }
 
     void ResponseOption2()
     {
+        HideChoices();
+
+        if (typingCoroutine != null)
+            StopCoroutine(typingCoroutine);
+
+        typingCoroutine = StartCoroutine(TypeResponseOption2());
+    }
+
+    IEnumerator TypeResponseOption2()
+    {
         if (hasCoin && dialogueState == 1)
         {
-            speakerText.text = "Date";
-            dialogueText.text = "No, I don't think so. It looks pretty old though.";
+            yield return StartCoroutine(TypeLine("Date", "No, I don't think so. It looks pretty old though."));
 
             dialogueState = 2;
             waitingForNext = false;
@@ -262,16 +341,15 @@ public class DialogueManager : MonoBehaviour
                 "Are you sure? You reacted kind of strangely.",
                 "Never mind, just wanted to check."
             );
-            return;
+            yield break;
         }
 
-        speakerText.text = "Date";
-        dialogueText.text = "I moved around a lot, so I don't really stay in one place for long.";
+        yield return StartCoroutine(TypeLine("Date", "I moved around a lot, so I don't really stay in one place for long."));
 
         waitingForNext = false;
 
         ShowChoices(
-            "Ask why he moved so much",
+            "Ask why you moved so much",
             "Change the topic",
             "End conversation"
         );
@@ -281,31 +359,36 @@ public class DialogueManager : MonoBehaviour
     {
         if (dialogueState == 1)
         {
-            speakerText.text = "Player";
-            dialogueText.text = "I should get going. See you.";
-
             HideChoices();
             waitingForNext = true;
             pendingResponse = 3;
+            StartTyping("Player", "I should get going. See you.");
             return;
         }
 
         if (dialogueState == 2)
         {
-            speakerText.text = "Player";
-            dialogueText.text = "Never mind, just wanted to check.";
-
             HideChoices();
             waitingForNext = true;
             pendingResponse = 6;
+            StartTyping("Player", "Never mind, just wanted to check.");
             return;
         }
     }
 
     void CoinResponseSafe()
     {
-        speakerText.text = "Date";
-        dialogueText.text = "Fair enough. It does look a little odd.";
+        HideChoices();
+
+        if (typingCoroutine != null)
+            StopCoroutine(typingCoroutine);
+
+        typingCoroutine = StartCoroutine(TypeCoinResponseSafe());
+    }
+
+    IEnumerator TypeCoinResponseSafe()
+    {
+        yield return StartCoroutine(TypeLine("Date", "Fair enough. It does look a little odd."));
 
         waitingForNext = false;
 
@@ -321,9 +404,17 @@ public class DialogueManager : MonoBehaviour
     void CoinResponseSuspicious()
     {
         suspicion += 1;
+        HideChoices();
 
-        speakerText.text = "Date";
-        dialogueText.text = "What? No, I didn't. Why are you making this such a big deal?\n\n\nSuspicion +";
+        if (typingCoroutine != null)
+            StopCoroutine(typingCoroutine);
+
+        typingCoroutine = StartCoroutine(TypeCoinResponseSuspicious());
+    }
+
+    IEnumerator TypeCoinResponseSuspicious()
+    {
+        yield return StartCoroutine(TypeLine("Date", "What? No, I didn't. Why are you making this such a big deal?\n\nSuspicion +1"));
 
         waitingForNext = false;
 
@@ -338,8 +429,17 @@ public class DialogueManager : MonoBehaviour
 
     void CoinResponseNeutral()
     {
-        speakerText.text = "Date";
-        dialogueText.text = "Alright. No problem.";
+        HideChoices();
+
+        if (typingCoroutine != null)
+            StopCoroutine(typingCoroutine);
+
+        typingCoroutine = StartCoroutine(TypeCoinResponseNeutral());
+    }
+
+    IEnumerator TypeCoinResponseNeutral()
+    {
+        yield return StartCoroutine(TypeLine("Date", "Alright. No problem."));
 
         waitingForNext = false;
 
@@ -363,6 +463,14 @@ public class DialogueManager : MonoBehaviour
     {
         isDialogueOpen = false;
         dialoguePanel.SetActive(false);
+
+        if (typingCoroutine != null)
+            StopCoroutine(typingCoroutine);
+
+        isTyping = false;
+        typingCoroutine = null;
+        currentFullLine = "";
+        currentSpeaker = "";
 
         if (playerMovement != null) playerMovement.enabled = true;
         if (playerLook != null) playerLook.enabled = true;

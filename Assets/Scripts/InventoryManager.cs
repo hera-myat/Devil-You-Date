@@ -5,11 +5,15 @@ using TMPro;
 public class InventoryManager : MonoBehaviour
 {
     [Header("UI")]
-    public Image[] slotHighlights;
+    public Image[] slotImages;
     public TextMeshProUGUI[] slotTexts;
 
+    [Header("Slot Sprites")]
+    public Sprite normalSlot;
+    public Sprite selectedSlotSprite;
+
     private string[] inventory = new string[4];
-    private int selectedSlot = 0;
+    private int selectedSlotIndex = 0;
 
     void Start()
     {
@@ -23,20 +27,18 @@ public class InventoryManager : MonoBehaviour
 
         if (scroll > 0f)
         {
-            selectedSlot--;
-            if (selectedSlot < 0)
-            {
-                selectedSlot = inventory.Length - 1;
-            }
+            selectedSlotIndex--;
+            if (selectedSlotIndex < 0)
+                selectedSlotIndex = inventory.Length - 1;
+
             UpdateSelectedSlot();
         }
         else if (scroll < 0f)
         {
-            selectedSlot++;
-            if (selectedSlot >= inventory.Length)
-            {
-                selectedSlot = 0;
-            }
+            selectedSlotIndex++;
+            if (selectedSlotIndex >= inventory.Length)
+                selectedSlotIndex = 0;
+
             UpdateSelectedSlot();
         }
     }
@@ -62,23 +64,20 @@ public class InventoryManager : MonoBehaviour
         for (int i = 0; i < slotTexts.Length; i++)
         {
             if (string.IsNullOrEmpty(inventory[i]))
-            {
                 slotTexts[i].text = "";
-            }
             else
-            {
                 slotTexts[i].text = inventory[i];
-            }
         }
     }
 
     void UpdateSelectedSlot()
     {
-        for (int i = 0; i < slotHighlights.Length; i++)
+        for (int i = 0; i < slotImages.Length; i++)
         {
-            Color c = slotHighlights[i].color;
-            c.a = (i == selectedSlot) ? 0.9f : 0.35f;
-            slotHighlights[i].color = c;
+            if (i == selectedSlotIndex)
+                slotImages[i].sprite = selectedSlotSprite;
+            else
+                slotImages[i].sprite = normalSlot;
         }
     }
 }
