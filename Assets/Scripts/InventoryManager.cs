@@ -59,6 +59,22 @@ public class InventoryManager : MonoBehaviour
         return false;
     }
 
+    public bool RemoveItem(string itemSymbol)
+    {
+        for (int i = 0; i < inventory.Length; i++)
+        {
+            if (inventory[i] == itemSymbol)
+            {
+                inventory[i] = "";
+                UpdateInventoryUI();
+                return true;
+            }
+        }
+
+        Debug.Log(itemSymbol + " was not found in inventory.");
+        return false;
+    }
+
     void UpdateInventoryUI()
     {
         for (int i = 0; i < slotTexts.Length; i++)

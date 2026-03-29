@@ -2,6 +2,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using System.Collections;
+using System;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -42,6 +43,13 @@ public class DialogueManager : MonoBehaviour
     private string currentFullLine = "";
     private string currentSpeaker = "";
 
+    private bool inSideQuestMode = false;
+    private Action<int> currentSideQuestCallback = null;
+    private bool canCloseSingleLine = false;
+
+    // Prevent the same E press from instantly skipping newly opened dialogue
+    private float inputBlockTimer = 0f;
+
     void Start()
     {
         dialoguePanel.SetActive(false);
@@ -55,6 +63,11 @@ public class DialogueManager : MonoBehaviour
 
     void Update()
     {
+        if (inputBlockTimer > 0f)
+        {
+            inputBlockTimer -= Time.deltaTime;
+        }
+
         if (!isDialogueOpen) return;
 
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -62,6 +75,8 @@ public class DialogueManager : MonoBehaviour
             EndDialogue();
             return;
         }
+
+        if (inputBlockTimer > 0f) return;
 
         if (Input.GetKeyDown(KeyCode.E))
         {
@@ -71,7 +86,13 @@ public class DialogueManager : MonoBehaviour
                 return;
             }
 
-            if (waitingForNext)
+            if (inSideQuestMode && canCloseSingleLine)
+            {
+                EndDialogue();
+                return;
+            }
+
+            if (!inSideQuestMode && waitingForNext)
             {
                 AdvanceDialogue();
             }
@@ -80,6 +101,11 @@ public class DialogueManager : MonoBehaviour
 
     public void StartDialogue()
     {
+        inSideQuestMode = false;
+        currentSideQuestCallback = null;
+        canCloseSingleLine = false;
+        inputBlockTimer = 0.2f;
+
         isDialogueOpen = true;
         dialogueState = 0;
         waitingForNext = true;
@@ -192,78 +218,6 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    void StartTyping(string speaker, string line)
-    {
-        if (typingCoroutine != null)
-            StopCoroutine(typingCoroutine);
-
-        typingCoroutine = StartCoroutine(TypeLine(speaker, line));
-    }
-
-    IEnumerator TypeLine(string speaker, string line)
-    {
-        isTyping = true;
-        currentSpeaker = speaker;
-        currentFullLine = line;
-
-        speakerText.text = speaker;
-        dialogueText.text = "";
-
-        foreach (char c in line)
-        {
-            dialogueText.text += c;
-            yield return new WaitForSeconds(typingSpeed);
-        }
-
-        isTyping = false;
-        typingCoroutine = null;
-    }
-
-    void FinishTypingInstantly()
-    {
-        if (!isTyping) return;
-
-        if (typingCoroutine != null)
-            StopCoroutine(typingCoroutine);
-
-        speakerText.text = currentSpeaker;
-        dialogueText.text = currentFullLine;
-        isTyping = false;
-        typingCoroutine = null;
-    }
-
-    void ShowChoices(string option1, string option2, string option3)
-    {
-        choiceButton1.gameObject.SetActive(true);
-        choiceButton2.gameObject.SetActive(true);
-        choiceButton3.gameObject.SetActive(true);
-
-        choiceButton1Text.text = option1;
-        choiceButton2Text.text = option2;
-        choiceButton3Text.text = option3;
-    }
-
-    void ChooseOption1()
-    {
-        if (dialogueState == 1)
-        {
-            HideChoices();
-            waitingForNext = true;
-            pendingResponse = 1;
-            StartTyping("Player", "How has your day been?");
-            return;
-        }
-
-        if (dialogueState == 2)
-        {
-            HideChoices();
-            waitingForNext = true;
-            pendingResponse = 4;
-            StartTyping("Player", "It looked unusual, so I thought I'd ask.");
-            return;
-        }
-    }
-
     void ResponseOption1()
     {
         HideChoices();
@@ -285,36 +239,6 @@ public class DialogueManager : MonoBehaviour
             "Ask about their past",
             "End conversation"
         );
-    }
-
-    void ChooseOption2()
-    {
-        if (dialogueState == 1)
-        {
-            HideChoices();
-            waitingForNext = true;
-            pendingResponse = 2;
-
-            if (hasCoin)
-            {
-                StartTyping("Player", "Hey, I found this coin nearby. Is it yours?");
-            }
-            else
-            {
-                StartTyping("Player", "Can you tell me a little about your past?");
-            }
-
-            return;
-        }
-
-        if (dialogueState == 2)
-        {
-            HideChoices();
-            waitingForNext = true;
-            pendingResponse = 5;
-            StartTyping("Player", "Are you sure? You reacted kind of strangely.");
-            return;
-        }
     }
 
     void ResponseOption2()
@@ -353,27 +277,6 @@ public class DialogueManager : MonoBehaviour
             "Change the topic",
             "End conversation"
         );
-    }
-
-    void ChooseOption3()
-    {
-        if (dialogueState == 1)
-        {
-            HideChoices();
-            waitingForNext = true;
-            pendingResponse = 3;
-            StartTyping("Player", "I should get going. See you.");
-            return;
-        }
-
-        if (dialogueState == 2)
-        {
-            HideChoices();
-            waitingForNext = true;
-            pendingResponse = 6;
-            StartTyping("Player", "Never mind, just wanted to check.");
-            return;
-        }
     }
 
     void CoinResponseSafe()
@@ -452,11 +355,289 @@ public class DialogueManager : MonoBehaviour
         dialogueState = 1;
     }
 
+    // =========================
+    // SIDE QUEST DIALOGUE
+    // =========================
+
+    public void StartSideQuestDialogue(string speaker, string line, string option1, string option2, string option3, Action<int> callback)
+    {
+        inSideQuestMode = true;
+        currentSideQuestCallback = callback;
+        canCloseSingleLine = false;
+        inputBlockTimer = 0.2f;
+
+        isDialogueOpen = true;
+        waitingForNext = false;
+        pendingResponse = 0;
+
+        dialoguePanel.SetActive(true);
+
+        if (interactionPrompt != null)
+            interactionPrompt.SetActive(false);
+
+        if (playerMovement != null) playerMovement.enabled = false;
+        if (playerLook != null) playerLook.enabled = false;
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        HideChoices();
+
+        if (typingCoroutine != null)
+            StopCoroutine(typingCoroutine);
+
+        typingCoroutine = StartCoroutine(TypeLineWithChoicesCoroutine(speaker, line, option1, option2, option3));
+    }
+
+    IEnumerator TypeLineWithChoicesCoroutine(string speaker, string line, string option1, string option2, string option3)
+    {
+        isTyping = true;
+        currentSpeaker = speaker;
+        currentFullLine = line;
+
+        speakerText.text = speaker;
+        dialogueText.text = "";
+
+        foreach (char c in line)
+        {
+            dialogueText.text += c;
+            yield return new WaitForSeconds(typingSpeed);
+        }
+
+        isTyping = false;
+        typingCoroutine = null;
+
+        ShowChoices(option1, option2, option3);
+    }
+
+    public void ShowSideQuestFollowUp(string speaker, string line, string option1, string option2, string option3, Action<int> callback)
+    {
+        inSideQuestMode = true;
+        currentSideQuestCallback = callback;
+        canCloseSingleLine = false;
+        inputBlockTimer = 0.2f;
+
+        HideChoices();
+
+        if (typingCoroutine != null)
+            StopCoroutine(typingCoroutine);
+
+        typingCoroutine = StartCoroutine(TypeLineWithChoicesCoroutine(speaker, line, option1, option2, option3));
+    }
+
+    public void ShowSideQuestSingleLine(string speaker, string line)
+    {
+        inSideQuestMode = true;
+        currentSideQuestCallback = null;
+        canCloseSingleLine = false;
+        inputBlockTimer = 0.2f;
+
+        isDialogueOpen = true;
+        dialoguePanel.SetActive(true);
+
+        if (interactionPrompt != null)
+            interactionPrompt.SetActive(false);
+
+        if (playerMovement != null) playerMovement.enabled = false;
+        if (playerLook != null) playerLook.enabled = false;
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        HideChoices();
+
+        if (typingCoroutine != null)
+            StopCoroutine(typingCoroutine);
+
+        typingCoroutine = StartCoroutine(TypeSingleLineCoroutine(speaker, line));
+    }
+
+    IEnumerator TypeSingleLineCoroutine(string speaker, string line)
+    {
+        isTyping = true;
+        currentSpeaker = speaker;
+        currentFullLine = line;
+
+        speakerText.text = speaker;
+        dialogueText.text = "";
+
+        foreach (char c in line)
+        {
+            dialogueText.text += c;
+            yield return new WaitForSeconds(typingSpeed);
+        }
+
+        isTyping = false;
+        typingCoroutine = null;
+        canCloseSingleLine = true;
+    }
+
+    // =========================
+    // SHARED TYPING
+    // =========================
+
+    void StartTyping(string speaker, string line)
+    {
+        if (typingCoroutine != null)
+            StopCoroutine(typingCoroutine);
+
+        typingCoroutine = StartCoroutine(TypeLine(speaker, line));
+    }
+
+    IEnumerator TypeLine(string speaker, string line)
+    {
+        isTyping = true;
+        currentSpeaker = speaker;
+        currentFullLine = line;
+
+        speakerText.text = speaker;
+        dialogueText.text = "";
+
+        foreach (char c in line)
+        {
+            dialogueText.text += c;
+            yield return new WaitForSeconds(typingSpeed);
+        }
+
+        isTyping = false;
+        typingCoroutine = null;
+    }
+
+    void FinishTypingInstantly()
+    {
+        if (!isTyping) return;
+
+        if (typingCoroutine != null)
+        {
+            StopCoroutine(typingCoroutine);
+            typingCoroutine = null;
+        }
+
+        isTyping = false;
+        speakerText.text = currentSpeaker;
+        dialogueText.text = currentFullLine;
+
+        if (inSideQuestMode)
+        {
+            canCloseSingleLine = true;
+        }
+    }
+
+    void ShowChoices(string option1, string option2, string option3)
+    {
+        choiceButton1.gameObject.SetActive(true);
+        choiceButton2.gameObject.SetActive(true);
+        choiceButton3.gameObject.SetActive(true);
+
+        choiceButton1Text.text = option1;
+        choiceButton2Text.text = option2;
+        choiceButton3Text.text = option3;
+    }
+
     void HideChoices()
     {
         choiceButton1.gameObject.SetActive(false);
         choiceButton2.gameObject.SetActive(false);
         choiceButton3.gameObject.SetActive(false);
+    }
+
+    void ChooseOption1()
+    {
+        if (inSideQuestMode)
+        {
+            HideChoices();
+            Action<int> callback = currentSideQuestCallback;
+            currentSideQuestCallback = null;
+            callback?.Invoke(1);
+            return;
+        }
+
+        if (dialogueState == 1)
+        {
+            HideChoices();
+            waitingForNext = true;
+            pendingResponse = 1;
+            StartTyping("Player", "How has your day been?");
+            return;
+        }
+
+        if (dialogueState == 2)
+        {
+            HideChoices();
+            waitingForNext = true;
+            pendingResponse = 4;
+            StartTyping("Player", "It looked unusual, so I thought I'd ask.");
+            return;
+        }
+    }
+
+    void ChooseOption2()
+    {
+        if (inSideQuestMode)
+        {
+            HideChoices();
+            Action<int> callback = currentSideQuestCallback;
+            currentSideQuestCallback = null;
+            callback?.Invoke(2);
+            return;
+        }
+
+        if (dialogueState == 1)
+        {
+            HideChoices();
+            waitingForNext = true;
+            pendingResponse = 2;
+
+            if (hasCoin)
+            {
+                StartTyping("Player", "Hey, I found this coin nearby. Is it yours?");
+            }
+            else
+            {
+                StartTyping("Player", "Can you tell me a little about your past?");
+            }
+
+            return;
+        }
+
+        if (dialogueState == 2)
+        {
+            HideChoices();
+            waitingForNext = true;
+            pendingResponse = 5;
+            StartTyping("Player", "Are you sure? You reacted kind of strangely.");
+            return;
+        }
+    }
+
+    void ChooseOption3()
+    {
+        if (inSideQuestMode)
+        {
+            HideChoices();
+            Action<int> callback = currentSideQuestCallback;
+            currentSideQuestCallback = null;
+            callback?.Invoke(3);
+            return;
+        }
+
+        if (dialogueState == 1)
+        {
+            HideChoices();
+            waitingForNext = true;
+            pendingResponse = 3;
+            StartTyping("Player", "I should get going. See you.");
+            return;
+        }
+
+        if (dialogueState == 2)
+        {
+            HideChoices();
+            waitingForNext = true;
+            pendingResponse = 6;
+            StartTyping("Player", "Never mind, just wanted to check.");
+            return;
+        }
     }
 
     public void EndDialogue()
@@ -471,6 +652,15 @@ public class DialogueManager : MonoBehaviour
         typingCoroutine = null;
         currentFullLine = "";
         currentSpeaker = "";
+        waitingForNext = false;
+        pendingResponse = 0;
+
+        inSideQuestMode = false;
+        currentSideQuestCallback = null;
+        canCloseSingleLine = false;
+        inputBlockTimer = 0f;
+
+        HideChoices();
 
         if (playerMovement != null) playerMovement.enabled = true;
         if (playerLook != null) playerLook.enabled = true;

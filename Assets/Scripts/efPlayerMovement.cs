@@ -3,42 +3,106 @@ using UnityEngine;
 public class efPlayerMovement : MonoBehaviour
 {
     public CharacterController controller;
+    public Animator animator;
 
-    public float speed = 12f;
+    [Header("Movement")]
+    public float walkSpeed = 6f;
+    public float runSpeed = 12f;
     public float gravity = -9.81f;
-    public float jumpHeight = 0.5f;
+    public float jumpHeight = 3f;
 
+    [Header("Ground Check")]
     public Transform groundCheck;
-    public float groundDistance = 0.4f;
+    public float groundDistance = 0.8f;
     public LayerMask groundMask;
 
-    Vector3 velocity;
-    bool isGrounded;
+    [Header("Sprint Stamina")]
+    public float maxSprintTime = 5f;
+    public float restTime = 3f;
 
-    // Update is called once per frame
+    private float currentSprintTime;
+    private float restTimer = 0f;
+
+    private bool isGrounded;
+    private bool isResting = false;
+
+    private Vector3 velocity;
+
+    void Start()
+    {
+        currentSprintTime = maxSprintTime;
+    }
+
     void Update()
     {
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
-        if(isGrounded && velocity.y < 0)
+        if (isGrounded && velocity.y < 0)
         {
-            velocity.y = -3f;
+            velocity.y = -2f;
         }
 
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
+        bool isMoving = x != 0 || z != 0;
+        bool wantsToRun = Input.GetKey(KeyCode.LeftShift);
+
+        if (isResting)
+        {
+            restTimer -= Time.deltaTime;
+
+            if (restTimer <= 0f)
+            {
+                isResting = false;
+                currentSprintTime = maxSprintTime;
+            }
+        }
+
+        bool canRun = !isResting && currentSprintTime > 0f;
+        bool isRunning = isMoving && wantsToRun && canRun;
+
+        if (isRunning)
+        {
+            currentSprintTime -= Time.deltaTime;
+
+            if (currentSprintTime <= 0f)
+            {
+                currentSprintTime = 0f;
+                isResting = true;
+                restTimer = restTime;
+            }
+        }
+
+        float currentSpeed = isRunning ? runSpeed : walkSpeed;
+
         Vector3 move = transform.right * x + transform.forward * z;
 
-        controller.Move(move * speed * Time.deltaTime);
-
-        velocity.y += gravity * Time.deltaTime;
-
-        controller.Move(velocity * Time.deltaTime);
-
-        if(Input.GetButtonDown("Jump") && isGrounded)
+        if (move.magnitude > 1f)
         {
+            move = move.normalized;
+        }
+
+        controller.Move(move * currentSpeed * Time.deltaTime);
+
+        if (animator != null)
+        {
+            animator.SetBool("isWalking", isMoving);
+            animator.SetBool("isRunning", isRunning);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Debug.Log("Space pressed, grounded = " + isGrounded);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            Debug.Log("Jump triggered");
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
+
+        velocity.y += gravity * Time.deltaTime;
+        controller.Move(velocity * Time.deltaTime);
     }
 }
