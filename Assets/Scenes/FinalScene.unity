@@ -25696,7 +25696,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7827332265616195287, guid: fecea2c4c197b4dfd87f6f8010bc2fd4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
@@ -46883,15 +46883,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 6777686cd99664211a4ebd33a0fd5078, type: 3}
       propertyPath: m_LocalScale.x
-      value: 2.5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6777686cd99664211a4ebd33a0fd5078, type: 3}
       propertyPath: m_LocalScale.y
-      value: 2.5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6777686cd99664211a4ebd33a0fd5078, type: 3}
       propertyPath: m_LocalScale.z
-      value: 2.5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 6777686cd99664211a4ebd33a0fd5078, type: 3}
       propertyPath: m_LocalPosition.x
@@ -52061,9 +52061,14 @@ MonoBehaviour:
   - {fileID: 317508453}
   - {fileID: 652920519}
   - {fileID: 2088372377}
-  moveSpeed: 2
+  player: {fileID: 2039874905}
+  dialogueManager: {fileID: 1615851176}
+  patrolSpeed: 5
+  chaseSpeed: 9
   rotateSpeed: 5
   reachDistance: 0.5
+  detectRange: 15
+  talkDistance: 8
   animator: {fileID: 1327661383}
   useWalkingAnimation: 0
 --- !u!195 &1327661382
@@ -52584,15 +52589,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 039844075236944439ad2eef250ea659, type: 3}
       propertyPath: m_LocalScale.x
-      value: 2.5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 039844075236944439ad2eef250ea659, type: 3}
       propertyPath: m_LocalScale.y
-      value: 2.5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 039844075236944439ad2eef250ea659, type: 3}
       propertyPath: m_LocalScale.z
-      value: 2.5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 039844075236944439ad2eef250ea659, type: 3}
       propertyPath: m_LocalPosition.x
@@ -52646,6 +52651,10 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: f99031f79e4154fd58c4a8ed5ce1bc11, type: 2}
+    - target: {fileID: 5866666021909216657, guid: 039844075236944439ad2eef250ea659, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
