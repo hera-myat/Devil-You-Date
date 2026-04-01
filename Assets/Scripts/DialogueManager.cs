@@ -472,10 +472,6 @@ public class DialogueManager : MonoBehaviour
         canCloseSingleLine = true;
     }
 
-    // =========================
-    // SHARED TYPING
-    // =========================
-
     void StartTyping(string speaker, string line)
     {
         if (typingCoroutine != null)
