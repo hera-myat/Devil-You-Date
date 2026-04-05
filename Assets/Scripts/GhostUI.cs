@@ -14,14 +14,6 @@ public class GhostUI : MonoBehaviour
         messageText.gameObject.SetActive(false);
     }
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            ShowMessage("Test Message");
-        }
-    }
-
     public void ShowMessage(string message)
     {
         if (currentRoutine != null)
