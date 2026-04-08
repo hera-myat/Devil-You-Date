@@ -10,7 +10,7 @@ public class DiaryPickup : MonoBehaviour
     public GameObject interactionPrompt;
 
     [Header("Inventory")]
-    public string itemSymbol = "D";
+    public string itemSymbol = "diary";
 
     private bool playerInRange = false;
     private bool pickedUp = false;
@@ -36,13 +36,6 @@ public class DiaryPickup : MonoBehaviour
 
     void PickUpDiary()
     {
-        pickedUp = true;
-
-        if (questNPC != null)
-        {
-            questNPC.SetPlayerHasDiary(true);
-        }
-
         if (inventoryManager != null)
         {
             bool added = inventoryManager.AddItem(itemSymbol);
@@ -50,7 +43,15 @@ public class DiaryPickup : MonoBehaviour
             if (!added)
             {
                 Debug.Log("Diary could not be added because inventory is full.");
+                return;
             }
+        }
+
+        pickedUp = true;
+
+        if (questNPC != null)
+        {
+            questNPC.SetPlayerHasDiary(true);
         }
 
         if (interactionPrompt != null)

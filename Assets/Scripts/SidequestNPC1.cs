@@ -14,9 +14,16 @@ public class SideQuestNPC : MonoBehaviour
     public bool questStarted = false;
     public bool questCompleted = false;
     public bool playerHasDiary = false;
+    public bool diaryReturnedLate = false;
+
+    [Header("Timer")]
+    public SideQuestTimer sideQuestTimer;
 
     [Header("Animation")]
     public string talkTriggerName = "Talk";
+
+    [Header("Suspicion")]
+    public SuspicionSystem suspicionSystem;
 
     private bool playerInRange = false;
     private DialogueManager dialogueManager;
@@ -76,7 +83,7 @@ public class SideQuestNPC : MonoBehaviour
         {
             dialogueManager.ShowSideQuestSingleLine(
                 npcName,
-                "Please look around nearby... I think I dropped it somewhere near the road or the trees."
+                "Please look around nearby... I think I dropped it somewhere around the asylum."
             );
             return;
         }
@@ -109,7 +116,7 @@ public class SideQuestNPC : MonoBehaviour
 
         dialogueManager.StartSideQuestDialogue(
             npcName,
-            "Oh god, finally I found someone... I think I lost my diary somewhere nearby, and I don't know where to even start looking. Could you help me find it?",
+            "Oh god, finally I found someone... I think I lost my diary somewhere around the asylum, and I don't know where to even start looking. Could you help me find it?",
             option1,
             option2,
             option3,
@@ -120,6 +127,8 @@ public class SideQuestNPC : MonoBehaviour
     void OnMainChoiceSelected(int choice)
     {
         string selectedText = GetCurrentMainChoiceText(choice);
+
+        Debug.Log("Main choice selected: " + selectedText);
 
         if (selectedText == "What do you mean you just found someone?")
         {
@@ -140,9 +149,9 @@ public class SideQuestNPC : MonoBehaviour
 
             dialogueManager.ShowSideQuestFollowUp(
                 npcName,
-                "I was writing near the roadside, and then I heard something behind me. I got scared and ran without thinking. When I stopped, the diary was gone.",
+                "I was writing near the roadside by the asylum, and then I heard something behind me. I got scared and ran without thinking. When I stopped, the diary was gone.",
                 "That sounds unsettling.",
-                "Maybe it fell near the trees?",
+                "Maybe it fell somewhere around the asylum?",
                 "I'll help you look for it.",
                 OnLostDiaryFollowUp
             );
@@ -161,9 +170,9 @@ public class SideQuestNPC : MonoBehaviour
 
             dialogueManager.ShowSideQuestFollowUp(
                 npcName,
-                "I was writing near the roadside, and then I heard something behind me. I got scared and ran without thinking. When I stopped, the diary was gone.",
+                "I was writing near the roadside by the asylum, and then I heard something behind me. I got scared and ran without thinking. When I stopped, the diary was gone.",
                 "That sounds unsettling.",
-                "Maybe it fell near the trees?",
+                "Maybe it fell somewhere around the asylum?",
                 "I'll help you look for it.",
                 OnLostDiaryFollowUp
             );
@@ -202,7 +211,7 @@ public class SideQuestNPC : MonoBehaviour
         {
             dialogueManager.ShowSideQuestFollowUp(
                 npcName,
-                "Maybe... could you check near the trees first? I feel like it has to be somewhere close.",
+                "Maybe... could you check around the asylum first? I feel like it has to be somewhere close.",
                 GetRemainingQuestionOption(),
                 "I'll help you look for it.",
                 "Alright, I'll check there first.",
@@ -226,6 +235,8 @@ public class SideQuestNPC : MonoBehaviour
         if (choice == 2) selectedText = option2;
         if (choice == 3) selectedText = option3;
 
+        Debug.Log("Reduced choice selected: " + selectedText);
+
         if (selectedText == "What do you mean you just found someone?")
         {
             askedFoundSomeone = true;
@@ -245,9 +256,9 @@ public class SideQuestNPC : MonoBehaviour
 
             dialogueManager.ShowSideQuestFollowUp(
                 npcName,
-                "I was writing near the roadside, and then I heard something behind me. I got scared and ran without thinking. When I stopped, the diary was gone.",
+                "I was writing near the roadside by the asylum, and then I heard something behind me. I got scared and ran without thinking. When I stopped, the diary was gone.",
                 "I'll help you look for it.",
-                "Maybe it fell near the trees?",
+                "Maybe it fell somewhere around the asylum?",
                 "Let me think for a second.",
                 OnReducedLostDiary
             );
@@ -277,9 +288,9 @@ public class SideQuestNPC : MonoBehaviour
 
             dialogueManager.ShowSideQuestFollowUp(
                 npcName,
-                "I was writing near the roadside, and then I heard something behind me. I got scared and ran without thinking. When I stopped, the diary was gone.",
+                "I was writing near the roadside by the asylum, and then I heard something behind me. I got scared and ran without thinking. When I stopped, the diary was gone.",
                 "I'll help you look for it.",
-                "Maybe it fell near the trees?",
+                "Maybe it fell somewhere around the asylum?",
                 "Let me think for a second.",
                 OnReducedLostDiary
             );
@@ -288,7 +299,7 @@ public class SideQuestNPC : MonoBehaviour
         {
             dialogueManager.ShowSideQuestSingleLine(
                 npcName,
-                "Please... I think it has to be somewhere nearby."
+                "Please... I think it has to be somewhere around the asylum."
             );
         }
     }
@@ -303,14 +314,14 @@ public class SideQuestNPC : MonoBehaviour
         {
             dialogueManager.ShowSideQuestSingleLine(
                 npcName,
-                "Then maybe the trees are the best place to start."
+                "Then maybe the asylum grounds are the best place to start."
             );
         }
         else
         {
             dialogueManager.ShowSideQuestSingleLine(
                 npcName,
-                "Please... I think it has to be somewhere nearby."
+                "Please... I think it has to be somewhere around the asylum."
             );
         }
     }
@@ -318,15 +329,31 @@ public class SideQuestNPC : MonoBehaviour
     void StartQuestNow()
     {
         questStarted = true;
+        diaryReturnedLate = false;
 
         if (diaryObject != null)
         {
             diaryObject.SetActive(true);
+            Debug.Log("Diary object activated.");
+        }
+        else
+        {
+            Debug.LogWarning("SideQuestNPC: diaryObject is not assigned.");
+        }
+
+        if (sideQuestTimer != null)
+        {
+            Debug.Log("Starting side quest timer...");
+            sideQuestTimer.StartTimer();
+        }
+        else
+        {
+            Debug.LogWarning("SideQuestNPC: sideQuestTimer is not assigned.");
         }
 
         dialogueManager.ShowSideQuestSingleLine(
             npcName,
-            "Thank you... I think it should be somewhere near the road or the trees. Please come back if you find it."
+            "Thank you... I think I dropped it somewhere around the asylum. Please come back if you find it."
         );
 
         Debug.Log("Side quest started: Find the diary");
@@ -338,14 +365,40 @@ public class SideQuestNPC : MonoBehaviour
         questStarted = false;
         playerHasDiary = false;
 
+        if (sideQuestTimer != null)
+        {
+            sideQuestTimer.StopTimer();
+        }
+
         if (inventoryManager != null)
         {
             inventoryManager.RemoveItem("D");
         }
 
+        // Only increase suspicion if the player completed this quest
+        // before meeting the Date for the first time.
+        if (suspicionSystem != null &&
+            GameProgressManager.Instance != null &&
+            !GameProgressManager.Instance.hasMetDate)
+        {
+            suspicionSystem.IncreaseSuspicion();
+            Debug.Log("Suspicion increased because player completed the side quest before meeting the Date.");
+        }
+
+        string completeLine = "";
+
+        if (diaryReturnedLate)
+        {
+            completeLine = "Thank you... Even though you brought it back late, I'm still glad you found it.";
+        }
+        else
+        {
+            completeLine = "You found it... thank you. I was scared I'd never get it back.";
+        }
+
         dialogueManager.ShowSideQuestSingleLine(
             npcName,
-            "You found it... thank you. I was scared I'd never get it back."
+            completeLine
         );
 
         Debug.Log("Side quest completed: Diary returned");

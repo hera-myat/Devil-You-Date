@@ -2,28 +2,29 @@ using UnityEngine;
 
 public class NPCInteraction : MonoBehaviour
 {
-    public GameObject interactionPrompt;
-    public DialogueManager dialogueManager;
+    public DateDialogue dateDialogue;
+    public GameObject interactPrompt;
 
     private bool playerInRange = false;
 
     void Start()
     {
-        if (interactionPrompt != null)
-        {
-            interactionPrompt.SetActive(false);
-        }
+        if (interactPrompt != null)
+            interactPrompt.SetActive(false);
     }
 
     void Update()
     {
-        if (dialogueManager == null) return;
+        if (!playerInRange)
+            return;
 
-        if (playerInRange && !dialogueManager.isDialogueOpen)
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            if (Input.GetKeyDown(KeyCode.E))
+            if (dateDialogue != null &&
+                dateDialogue.dialogueManager != null &&
+                !dateDialogue.dialogueManager.isDialogueOpen)
             {
-                dialogueManager.StartDialogue();
+                dateDialogue.StartDateDialogue();
             }
         }
     }
@@ -34,10 +35,8 @@ public class NPCInteraction : MonoBehaviour
         {
             playerInRange = true;
 
-            if (interactionPrompt != null && dialogueManager != null && !dialogueManager.isDialogueOpen)
-            {
-                interactionPrompt.SetActive(true);
-            }
+            if (interactPrompt != null)
+                interactPrompt.SetActive(true);
         }
     }
 
@@ -47,10 +46,8 @@ public class NPCInteraction : MonoBehaviour
         {
             playerInRange = false;
 
-            if (interactionPrompt != null)
-            {
-                interactionPrompt.SetActive(false);
-            }
+            if (interactPrompt != null)
+                interactPrompt.SetActive(false);
         }
     }
 }

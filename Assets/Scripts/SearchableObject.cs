@@ -1,133 +1,139 @@
 using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine.UI;
+using System.Collections;
 
 public class SearchableObject : MonoBehaviour
 {
+    [Header("Search Lock")]
+    public bool canSearch = true;
+
     [Header("UI")]
     public GameObject searchPrompt;
-    public Slider progressBar;
-    public TextMeshProUGUI foundItemText;
+    public Slider progressSlider;
+    public TextMeshProUGUI resultText;
 
     [Header("Search Settings")]
     public float searchTime = 2f;
 
-    [Tooltip("What shows inside the inventory slot")]
-    public string inventorySymbol = "C";
-
-    [TextArea]
-    public string discoveryMessage = "You found a strange coin engraved with unknown symbols.";
-
-    [Header("Inventory")]
+    [Header("Reward")]
     public InventoryManager inventoryManager;
+    public string rewardItemId = "coin";
 
-    [Header("Dialogue")]
-    public DialogueManager dialogueManager;
+    [Header("Suspicion")]
+    public DateDialogue dateDialogue;
+    public SuspicionSystem suspicionSystem;
 
     private bool playerInRange = false;
-    private bool hasBeenSearched = false;
-    private float holdTimer = 0f;
+    private bool alreadySearched = false;
+    private bool isSearching = false;
+    private bool suspicionApplied = false;
 
     void Start()
     {
         if (searchPrompt != null)
             searchPrompt.SetActive(false);
 
-        if (progressBar != null)
+        if (progressSlider != null)
         {
-            progressBar.gameObject.SetActive(false);
-            progressBar.value = 0f;
-            progressBar.maxValue = searchTime;
+            progressSlider.gameObject.SetActive(false);
+            progressSlider.value = 0f;
         }
 
-        if (foundItemText != null)
-            foundItemText.gameObject.SetActive(false);
+        if (resultText != null)
+            resultText.gameObject.SetActive(false);
     }
 
     void Update()
     {
-        if (!playerInRange || hasBeenSearched)
-            return;
-
-        if (Input.GetKey(KeyCode.E))
+        if (playerInRange && canSearch && Input.GetKeyDown(KeyCode.E) && !isSearching)
         {
-            holdTimer += Time.deltaTime;
-
-            if (progressBar != null)
+            if (!alreadySearched)
             {
-                progressBar.gameObject.SetActive(true);
-                progressBar.value = holdTimer;
+                StartCoroutine(SearchRoutine());
             }
-
-            if (holdTimer >= searchTime)
+            else
             {
-                CompleteSearch();
+                ShowMessage("There is nothing else here.");
             }
-        }
-
-        if (Input.GetKeyUp(KeyCode.E))
-        {
-            ResetSearch();
         }
     }
 
-    void CompleteSearch()
+    IEnumerator SearchRoutine()
     {
-        hasBeenSearched = true;
+        isSearching = true;
 
         if (searchPrompt != null)
             searchPrompt.SetActive(false);
 
-        if (progressBar != null)
+        if (progressSlider != null)
         {
-            progressBar.value = searchTime;
-            progressBar.gameObject.SetActive(false);
+            progressSlider.gameObject.SetActive(true);
+            progressSlider.value = 0f;
         }
+
+        float timer = 0f;
+
+        while (timer < searchTime)
+        {
+            timer += Time.deltaTime;
+
+            if (progressSlider != null)
+                progressSlider.value = timer / searchTime;
+
+            yield return null;
+        }
+
+        alreadySearched = true;
+        isSearching = false;
+
+        if (progressSlider != null)
+        {
+            progressSlider.gameObject.SetActive(false);
+            progressSlider.value = 0f;
+        }
+
+        bool gotReward = false;
 
         if (inventoryManager != null)
+            gotReward = inventoryManager.AddItem(rewardItemId);
+
+        if (dateDialogue != null && !dateDialogue.hasTalkedToDate && !suspicionApplied && suspicionSystem != null)
         {
-            inventoryManager.AddItem(inventorySymbol);
+            suspicionSystem.IncreaseSuspicion();
+            suspicionApplied = true;
         }
 
-        if (dialogueManager != null)
-        {
-            dialogueManager.hasCoin = true;
-        }
-
-        if (foundItemText != null)
-        {
-            foundItemText.text = discoveryMessage;
-            foundItemText.gameObject.SetActive(true);
-            Invoke(nameof(HideFoundText), 4f);
-        }
-
-        Debug.Log("Search complete: " + inventorySymbol);
+        if (gotReward)
+            ShowMessage("You searched the trash can and found a coin, maybe you can use it for the vending machine around you.");
+        else
+            ShowMessage("You found a coin for the vending machine, but your inventory is full.");
     }
 
-    void HideFoundText()
+    void ShowMessage(string message)
     {
-        if (foundItemText != null)
-            foundItemText.gameObject.SetActive(false);
+        if (resultText != null)
+        {
+            resultText.text = message;
+            resultText.gameObject.SetActive(true);
+            CancelInvoke(nameof(HideMessage));
+            Invoke(nameof(HideMessage), 3f);
+        }
     }
 
-    void ResetSearch()
+    void HideMessage()
     {
-        holdTimer = 0f;
-
-        if (progressBar != null)
-        {
-            progressBar.value = 0f;
-            progressBar.gameObject.SetActive(false);
-        }
+        if (resultText != null)
+            resultText.gameObject.SetActive(false);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player") && !hasBeenSearched)
+        if (other.CompareTag("Player"))
         {
             playerInRange = true;
 
-            if (searchPrompt != null)
+            if (canSearch && searchPrompt != null && !alreadySearched && !isSearching)
                 searchPrompt.SetActive(true);
         }
     }
@@ -141,7 +147,22 @@ public class SearchableObject : MonoBehaviour
             if (searchPrompt != null)
                 searchPrompt.SetActive(false);
 
-            ResetSearch();
+            if (progressSlider != null)
+            {
+                progressSlider.gameObject.SetActive(false);
+                progressSlider.value = 0f;
+            }
+
+            isSearching = false;
+            StopAllCoroutines();
         }
+    }
+
+    public void UnlockSearch()
+    {
+        canSearch = true;
+
+        if (playerInRange && !alreadySearched && !isSearching && searchPrompt != null)
+            searchPrompt.SetActive(true);
     }
 }

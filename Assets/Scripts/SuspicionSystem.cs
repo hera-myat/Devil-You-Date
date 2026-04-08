@@ -31,6 +31,12 @@ public class SuspicionSystem : MonoBehaviour
         {
             IncreaseSuspicion();
         }
+
+        // OPTIONAL TEST KEY
+        if (Input.GetKeyDown(KeyCode.O))
+        {
+            DecreaseSuspicion();
+        }
     }
 
     public void IncreaseSuspicion()
@@ -44,10 +50,33 @@ public class SuspicionSystem : MonoBehaviour
 
         UpdateSuspicionIcon();
 
-        if (suspicionLevel == 5)
+        if (suspicionLevel >= maxSuspicion)
         {
             TriggerEnding();
         }
+    }
+
+    public void DecreaseSuspicion()
+    {
+        if (endingTriggered) return;
+
+        suspicionLevel--;
+
+        if (suspicionLevel < 0)
+            suspicionLevel = 0;
+
+        UpdateSuspicionIcon();
+    }
+
+    public void ResetSuspicion()
+    {
+        if (endingTriggered)
+            return;
+
+        suspicionLevel = 0;
+        UpdateSuspicionIcon();
+
+        Debug.Log("Suspicion has been cleared through repentance.");
     }
 
     void UpdateSuspicionIcon()
@@ -82,7 +111,7 @@ public class SuspicionSystem : MonoBehaviour
         if (endingText != null)
         {
             endingText.gameObject.SetActive(true);
-            endingText.text = "We triggered one of the ending";
+            endingText.text = "We triggered one of the endings.";
         }
 
         Debug.Log("Ending triggered because suspicion reached level 5.");

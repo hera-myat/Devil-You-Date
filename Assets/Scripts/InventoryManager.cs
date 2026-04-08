@@ -6,11 +6,20 @@ public class InventoryManager : MonoBehaviour
 {
     [Header("UI")]
     public Image[] slotImages;
+    public Image[] itemIcons;
     public TextMeshProUGUI[] slotTexts;
 
     [Header("Slot Sprites")]
     public Sprite normalSlot;
     public Sprite selectedSlotSprite;
+
+    [Header("Item Icons")]
+    public Sprite canIcon;
+    public Sprite coinIcon;
+    public Sprite diaryIcon;
+    public Sprite sodaIcon;
+    public Sprite foodIcon;
+    public Sprite coffeeIcon;
 
     private string[] inventory = new string[4];
     private int selectedSlotIndex = 0;
@@ -23,33 +32,38 @@ public class InventoryManager : MonoBehaviour
 
     void Update()
     {
-        float scroll = Input.GetAxis("Mouse ScrollWheel");
-
-        if (scroll > 0f)
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            selectedSlotIndex--;
-            if (selectedSlotIndex < 0)
-                selectedSlotIndex = inventory.Length - 1;
-
+            selectedSlotIndex = 0;
             UpdateSelectedSlot();
         }
-        else if (scroll < 0f)
-        {
-            selectedSlotIndex++;
-            if (selectedSlotIndex >= inventory.Length)
-                selectedSlotIndex = 0;
 
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            selectedSlotIndex = 1;
+            UpdateSelectedSlot();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            selectedSlotIndex = 2;
+            UpdateSelectedSlot();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            selectedSlotIndex = 3;
             UpdateSelectedSlot();
         }
     }
 
-    public bool AddItem(string itemSymbol)
+    public bool AddItem(string itemId)
     {
         for (int i = 0; i < inventory.Length; i++)
         {
             if (string.IsNullOrEmpty(inventory[i]))
             {
-                inventory[i] = itemSymbol;
+                inventory[i] = itemId;
                 UpdateInventoryUI();
                 return true;
             }
@@ -59,11 +73,11 @@ public class InventoryManager : MonoBehaviour
         return false;
     }
 
-    public bool RemoveItem(string itemSymbol)
+    public bool RemoveItem(string itemId)
     {
         for (int i = 0; i < inventory.Length; i++)
         {
-            if (inventory[i] == itemSymbol)
+            if (inventory[i] == itemId)
             {
                 inventory[i] = "";
                 UpdateInventoryUI();
@@ -71,18 +85,92 @@ public class InventoryManager : MonoBehaviour
             }
         }
 
-        Debug.Log(itemSymbol + " was not found in inventory.");
+        Debug.Log(itemId + " was not found in inventory.");
         return false;
+    }
+
+    public bool RemoveSelectedItem()
+    {
+        if (string.IsNullOrEmpty(inventory[selectedSlotIndex]))
+        {
+            Debug.Log("Selected slot is empty.");
+            return false;
+        }
+
+        inventory[selectedSlotIndex] = "";
+        UpdateInventoryUI();
+        return true;
+    }
+
+    public string GetSelectedItem()
+    {
+        return inventory[selectedSlotIndex];
+    }
+
+    public int GetSelectedSlotIndex()
+    {
+        return selectedSlotIndex;
+    }
+
+    public bool HasItem(string itemId)
+    {
+        for (int i = 0; i < inventory.Length; i++)
+        {
+            if (inventory[i] == itemId)
+                return true;
+        }
+
+        return false;
+    }
+
+    Sprite GetIconForItem(string itemId)
+    {
+        if (itemId == "can") return canIcon;
+        if (itemId == "coin") return coinIcon;
+        if (itemId == "diary") return diaryIcon;
+        if (itemId == "soda") return sodaIcon;
+        if (itemId == "food") return foodIcon;
+        if (itemId == "coffee") return coffeeIcon;
+
+        return null;
     }
 
     void UpdateInventoryUI()
     {
-        for (int i = 0; i < slotTexts.Length; i++)
+        for (int i = 0; i < inventory.Length; i++)
         {
-            if (string.IsNullOrEmpty(inventory[i]))
+            if (slotTexts != null && i < slotTexts.Length && slotTexts[i] != null)
+            {
                 slotTexts[i].text = "";
-            else
-                slotTexts[i].text = inventory[i];
+            }
+
+            if (itemIcons != null && i < itemIcons.Length && itemIcons[i] != null)
+            {
+                if (string.IsNullOrEmpty(inventory[i]))
+                {
+                    itemIcons[i].sprite = null;
+                    itemIcons[i].enabled = false;
+                }
+                else
+                {
+                    Sprite icon = GetIconForItem(inventory[i]);
+
+                    Debug.Log("Slot " + i + " item = " + inventory[i] +
+                              " | icon = " + (icon != null ? icon.name : "NULL"));
+
+                    if (icon != null)
+                    {
+                        itemIcons[i].sprite = icon;
+                        itemIcons[i].enabled = true;
+                        itemIcons[i].color = Color.white;
+                    }
+                    else
+                    {
+                        itemIcons[i].sprite = null;
+                        itemIcons[i].enabled = false;
+                    }
+                }
+            }
         }
     }
 
