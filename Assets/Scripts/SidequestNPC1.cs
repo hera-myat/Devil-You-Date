@@ -25,6 +25,10 @@ public class SideQuestNPC : MonoBehaviour
     [Header("Suspicion")]
     public SuspicionSystem suspicionSystem;
 
+    [Header("Date Event")]
+    public DateEventManager dateEventManager;
+    public string rewardItemId = "planner";
+
     private bool playerInRange = false;
     private DialogueManager dialogueManager;
     private Animator anim;
@@ -370,19 +374,43 @@ public class SideQuestNPC : MonoBehaviour
             sideQuestTimer.StopTimer();
         }
 
+        bool rewardAdded = false;
+
         if (inventoryManager != null)
         {
-            inventoryManager.RemoveItem("D");
+            inventoryManager.RemoveItem("diary");
+
+            if (inventoryManager.HasItem(rewardItemId))
+            {
+                rewardAdded = true;
+            }
+            else
+            {
+                rewardAdded = inventoryManager.AddItem(rewardItemId);
+
+                if (!rewardAdded)
+                {
+                    Debug.Log("Could not add planner because inventory is full.");
+                }
+            }
         }
 
-        // Only increase suspicion if the player completed this quest
-        // before meeting the Date for the first time.
         if (suspicionSystem != null &&
             GameProgressManager.Instance != null &&
             !GameProgressManager.Instance.hasMetDate)
         {
             suspicionSystem.IncreaseSuspicion();
             Debug.Log("Suspicion increased because player completed the side quest before meeting the Date.");
+        }
+
+        if (GameProgressManager.Instance != null)
+        {
+            GameProgressManager.Instance.UnlockDiaryReward();
+        }
+
+        if (rewardAdded && dateEventManager != null)
+        {
+            dateEventManager.StartReturnEvent(rewardItemId);
         }
 
         string completeLine = "";
@@ -401,7 +429,7 @@ public class SideQuestNPC : MonoBehaviour
             completeLine
         );
 
-        Debug.Log("Side quest completed: Diary returned");
+        Debug.Log("Side quest completed: Diary returned. Date return event started.");
     }
 
     public void SetPlayerHasDiary(bool value)

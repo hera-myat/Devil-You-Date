@@ -14,10 +14,12 @@ public class CanPickup : MonoBehaviour
     public int canAmount = 4;
 
     private bool playerInRange = false;
-    private bool pickedUp = false;
+    private int remainingCans;
 
     void Start()
     {
+        remainingCans = canAmount;
+
         if (interactPrompt != null)
             interactPrompt.SetActive(false);
 
@@ -27,7 +29,10 @@ public class CanPickup : MonoBehaviour
 
     void Update()
     {
-        if (!playerInRange || pickedUp)
+        if (!playerInRange)
+            return;
+
+        if (remainingCans <= 0)
             return;
 
         if (Input.GetKeyDown(KeyCode.E))
@@ -46,7 +51,7 @@ public class CanPickup : MonoBehaviour
 
         int addedCount = 0;
 
-        for (int i = 0; i < canAmount; i++)
+        for (int i = 0; i < remainingCans; i++)
         {
             bool added = inventoryManager.AddItem(itemId);
 
@@ -62,22 +67,26 @@ public class CanPickup : MonoBehaviour
             return;
         }
 
+        remainingCans -= addedCount;
+
         if (cleanupTimer != null && !cleanupTimer.IsRunning() && !cleanupTimer.HasFinished())
         {
             cleanupTimer.StartTimer();
         }
 
-        pickedUp = true;
+        if (remainingCans <= 0)
+        {
+            ShowMessage("You picked up all the cans.");
 
-        if (addedCount == canAmount)
-            ShowMessage("You picked up 4 cans.");
+            if (interactPrompt != null)
+                interactPrompt.SetActive(false);
+
+            gameObject.SetActive(false);
+        }
         else
-            ShowMessage("Only picked up " + addedCount + " cans. Inventory is full.");
-
-        if (interactPrompt != null)
-            interactPrompt.SetActive(false);
-
-        gameObject.SetActive(false);
+        {
+            ShowMessage("You picked up " + addedCount + " cans. " + remainingCans + " left.");
+        }
     }
 
     void ShowMessage(string message)
@@ -99,7 +108,7 @@ public class CanPickup : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player") && !pickedUp)
+        if (other.CompareTag("Player") && remainingCans > 0)
         {
             playerInRange = true;
 

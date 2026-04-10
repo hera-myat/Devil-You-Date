@@ -20,6 +20,19 @@ public class InventoryManager : MonoBehaviour
     public Sprite sodaIcon;
     public Sprite foodIcon;
     public Sprite coffeeIcon;
+    public Sprite knifeIcon;
+    public Sprite plannerIcon;
+    public Sprite coinAwardIcon;
+    public Sprite crossIcon;
+    public Sprite trashCleanIcon;
+
+    public Sprite bottleIcon;
+    public Sprite pizzaBoxIcon;
+    public Sprite sodaCanIcon;
+    public Sprite sprayCanIcon;
+    public Sprite metalCanIcon;
+    public Sprite cigaretteIcon;
+
 
     private string[] inventory = new string[4];
     private int selectedSlotIndex = 0;
@@ -131,6 +144,18 @@ public class InventoryManager : MonoBehaviour
         if (itemId == "soda") return sodaIcon;
         if (itemId == "food") return foodIcon;
         if (itemId == "coffee") return coffeeIcon;
+        if (itemId == "knife") return knifeIcon;
+        if (itemId == "planner") return plannerIcon;
+        if (itemId == "coinaward") return coinAwardIcon;
+        if (itemId == "cross") return crossIcon;
+        if (itemId == "trashclean") return trashCleanIcon;
+
+        if (itemId == "bottle") return bottleIcon;
+        if (itemId == "pizzabox") return pizzaBoxIcon;
+        if (itemId == "sodacan") return sodaCanIcon;
+        if (itemId == "spraycan") return sprayCanIcon;
+        if (itemId == "metalcan") return metalCanIcon;
+        if (itemId == "cigarette") return cigaretteIcon;
 
         return null;
     }

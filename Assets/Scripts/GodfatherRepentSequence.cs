@@ -17,7 +17,15 @@ public class GodfatherRepentSequence : MonoBehaviour
     public MonoBehaviour playerMovement;
     public MonoBehaviour playerLook;
 
+    [Header("References")]
     public SuspicionSystem suspicionSystem;
+    public MoralStateManager moralStateManager;
+    public InventoryManager inventoryManager;
+    public DateEventManager dateEventManager;
+
+    [Header("Quest Reward")]
+    public string crossItemId = "cross";
+
     public bool repentCompleted = false;
 
     private string[] lines =
@@ -88,9 +96,42 @@ public class GodfatherRepentSequence : MonoBehaviour
         }
 
         repentCompleted = true;
+
+        if (moralStateManager != null)
+        {
+            moralStateManager.MarkRepented();
+        }
+
+        bool rewardAdded = false;
+
+        if (inventoryManager != null)
+        {
+            if (inventoryManager.HasItem(crossItemId))
+            {
+                rewardAdded = true;
+            }
+            else
+            {
+                rewardAdded = inventoryManager.AddItem(crossItemId);
+
+                if (!rewardAdded)
+                {
+                    Debug.Log("Could not add cross because inventory is full.");
+                }
+            }
+        }
+
+        if (GameProgressManager.Instance != null)
+        {
+            GameProgressManager.Instance.UnlockRepentReward();
+        }
+
+        if (rewardAdded && dateEventManager != null)
+        {
+            dateEventManager.StartReturnEvent(crossItemId);
+        }
+
         isPlaying = false;
-
-
     }
 
     IEnumerator ShowLineAndWaitForClick(string line)

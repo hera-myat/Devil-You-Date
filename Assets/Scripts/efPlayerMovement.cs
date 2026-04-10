@@ -20,6 +20,10 @@ public class efPlayerMovement : MonoBehaviour
     public float maxSprintTime = 5f;
     public float restTime = 3f;
 
+    [Header("Breathing Sound")]
+    public AudioSource breathingAudioSource;
+    public AudioClip heavyBreathingClip;
+
     private float currentSprintTime;
     private float restTimer = 0f;
 
@@ -31,6 +35,12 @@ public class efPlayerMovement : MonoBehaviour
     void Start()
     {
         currentSprintTime = maxSprintTime;
+
+        if (breathingAudioSource != null)
+        {
+            breathingAudioSource.playOnAwake = false;
+            breathingAudioSource.loop = false;
+        }
     }
 
     void Update()
@@ -56,6 +66,7 @@ public class efPlayerMovement : MonoBehaviour
             {
                 isResting = false;
                 currentSprintTime = maxSprintTime;
+                StopHeavyBreathing();
             }
         }
 
@@ -71,6 +82,7 @@ public class efPlayerMovement : MonoBehaviour
                 currentSprintTime = 0f;
                 isResting = true;
                 restTimer = restTime;
+                PlayHeavyBreathing();
             }
         }
 
@@ -104,5 +116,30 @@ public class efPlayerMovement : MonoBehaviour
 
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
+    }
+
+    void PlayHeavyBreathing()
+    {
+        if (breathingAudioSource == null || heavyBreathingClip == null)
+            return;
+
+        if (breathingAudioSource.isPlaying)
+            return;
+
+        breathingAudioSource.clip = heavyBreathingClip;
+        breathingAudioSource.loop = true;
+        breathingAudioSource.Play();
+    }
+
+    void StopHeavyBreathing()
+    {
+        if (breathingAudioSource == null)
+            return;
+
+        if (breathingAudioSource.isPlaying)
+            breathingAudioSource.Stop();
+
+        breathingAudioSource.loop = false;
+        breathingAudioSource.clip = null;
     }
 }

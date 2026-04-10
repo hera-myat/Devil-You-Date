@@ -6,49 +6,53 @@ public class SuspicionSystem : MonoBehaviour
 {
     [Header("Suspicion Settings")]
     public int suspicionLevel = 0;
-    public int maxSuspicion = 5;
+    public int maxSuspicion = 4;
 
     [Header("UI")]
-    public Image suspicionIcon;
+    public Image skeleton1;
+    public Image skeleton2;
+    public Image skeleton3;
     public TMP_Text endingText;
+
+    [Header("Heartbeat Sound")]
+    public AudioSource heartbeatAudioSource;
+    public AudioClip heartbeatClip;
+    private bool isHeartbeatPlaying = false;
+
+    [Header("Ending Sequence")]
+    public DateKillEndingSequence dateKillEndingSequence;
 
     private bool endingTriggered = false;
 
     void Start()
     {
-        UpdateSuspicionIcon();
+        UpdateSkeletonUI();
 
         if (endingText != null)
-        {
             endingText.gameObject.SetActive(false);
-        }
     }
 
     void Update()
     {
-        // TEST KEY
+        // test keys
         if (Input.GetKeyDown(KeyCode.P))
-        {
             IncreaseSuspicion();
-        }
 
-        // OPTIONAL TEST KEY
         if (Input.GetKeyDown(KeyCode.O))
-        {
             DecreaseSuspicion();
-        }
     }
 
     public void IncreaseSuspicion()
     {
-        if (endingTriggered) return;
+        if (endingTriggered)
+            return;
 
         suspicionLevel++;
 
         if (suspicionLevel > maxSuspicion)
             suspicionLevel = maxSuspicion;
 
-        UpdateSuspicionIcon();
+        UpdateSkeletonUI();
 
         if (suspicionLevel >= maxSuspicion)
         {
@@ -58,14 +62,15 @@ public class SuspicionSystem : MonoBehaviour
 
     public void DecreaseSuspicion()
     {
-        if (endingTriggered) return;
+        if (endingTriggered)
+            return;
 
         suspicionLevel--;
 
         if (suspicionLevel < 0)
             suspicionLevel = 0;
 
-        UpdateSuspicionIcon();
+        UpdateSkeletonUI();
     }
 
     public void ResetSuspicion()
@@ -74,46 +79,101 @@ public class SuspicionSystem : MonoBehaviour
             return;
 
         suspicionLevel = 0;
-        UpdateSuspicionIcon();
+        UpdateSkeletonUI();
 
         Debug.Log("Suspicion has been cleared through repentance.");
     }
 
-    void UpdateSuspicionIcon()
+    void UpdateSkeletonUI()
     {
-        if (suspicionIcon == null) return;
+        if (skeleton1 == null || skeleton2 == null || skeleton3 == null)
+            return;
 
-        Color color = suspicionIcon.color;
+        skeleton1.gameObject.SetActive(false);
+        skeleton2.gameObject.SetActive(false);
+        skeleton3.gameObject.SetActive(false);
 
-        if (suspicionLevel == 0)
+        skeleton1.color = Color.white;
+        skeleton2.color = Color.white;
+        skeleton3.color = Color.white;
+
+        if (suspicionLevel >= 1)
+            skeleton1.gameObject.SetActive(true);
+
+        if (suspicionLevel >= 2)
+            skeleton2.gameObject.SetActive(true);
+
+        if (suspicionLevel >= 3)
+            skeleton3.gameObject.SetActive(true);
+
+        // Heartbeat logic
+        if (suspicionLevel == 3 && !isHeartbeatPlaying)
         {
-            color = Color.white;
-            color.a = 0f;
+            PlayHeartbeat();
         }
-        else if (suspicionLevel >= 1 && suspicionLevel <= 4)
+        else if (suspicionLevel < 3 && isHeartbeatPlaying)
         {
-            color = Color.white;
-            color.a = suspicionLevel / 4f;
-        }
-        else if (suspicionLevel == 5)
-        {
-            color = Color.red;
-            color.a = 1f;
+            StopHeartbeat();
         }
 
-        suspicionIcon.color = color;
+        if (suspicionLevel >= 4)
+        {
+            skeleton1.gameObject.SetActive(true);
+            skeleton2.gameObject.SetActive(true);
+            skeleton3.gameObject.SetActive(true);
+
+            skeleton1.color = Color.red;
+            skeleton2.color = Color.red;
+            skeleton3.color = Color.red;
+        }
     }
 
     void TriggerEnding()
     {
         endingTriggered = true;
+        StopHeartbeat();
 
         if (endingText != null)
         {
-            endingText.gameObject.SetActive(true);
-            endingText.text = "We triggered one of the endings.";
+            endingText.gameObject.SetActive(false);
         }
 
-        Debug.Log("Ending triggered because suspicion reached level 5.");
+        if (dateKillEndingSequence != null)
+        {
+            dateKillEndingSequence.StartEndingSequence();
+        }
+
+        Debug.Log("Ending triggered because suspicion reached level 4.");
+    }
+
+    public bool IsEndingTriggered()
+    {
+        return endingTriggered;
+    }
+
+    void PlayHeartbeat()
+    {
+        if (heartbeatAudioSource == null || heartbeatClip == null)
+            return;
+
+        heartbeatAudioSource.clip = heartbeatClip;
+        heartbeatAudioSource.loop = true;
+        heartbeatAudioSource.Play();
+
+        isHeartbeatPlaying = true;
+    }
+
+    void StopHeartbeat()
+    {
+        if (heartbeatAudioSource == null)
+            return;
+
+        if (heartbeatAudioSource.isPlaying)
+            heartbeatAudioSource.Stop();
+
+        heartbeatAudioSource.loop = false;
+        heartbeatAudioSource.clip = null;
+
+        isHeartbeatPlaying = false;
     }
 }
