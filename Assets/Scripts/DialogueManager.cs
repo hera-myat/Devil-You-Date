@@ -41,6 +41,10 @@ public class DialogueManager : MonoBehaviour
     private bool canCloseSingleLine = false;
     private float inputBlockTimer = 0f;
 
+    private string currentOption1 = "";
+    private string currentOption2 = "";
+    private string currentOption3 = "";
+
     void Start()
     {
         if (dialoguePanel != null)
@@ -70,7 +74,7 @@ public class DialogueManager : MonoBehaviour
         if (inputBlockTimer > 0f)
             return;
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetMouseButtonDown(0))
         {
             if (isTyping)
             {
@@ -90,6 +94,10 @@ public class DialogueManager : MonoBehaviour
         currentSideQuestCallback = callback;
         canCloseSingleLine = false;
         inputBlockTimer = 0.2f;
+
+        currentOption1 = option1;
+        currentOption2 = option2;
+        currentOption3 = option3;
 
         isDialogueOpen = true;
 
@@ -122,6 +130,10 @@ public class DialogueManager : MonoBehaviour
         currentSpeaker = speaker;
         currentFullLine = line;
 
+        currentOption1 = option1;
+        currentOption2 = option2;
+        currentOption3 = option3;
+
         speakerText.text = speaker;
         dialogueText.text = "";
 
@@ -143,6 +155,10 @@ public class DialogueManager : MonoBehaviour
         canCloseSingleLine = false;
         inputBlockTimer = 0.2f;
 
+        currentOption1 = option1;
+        currentOption2 = option2;
+        currentOption3 = option3;
+
         HideChoices();
 
         if (typingCoroutine != null)
@@ -156,6 +172,10 @@ public class DialogueManager : MonoBehaviour
         currentSideQuestCallback = null;
         canCloseSingleLine = false;
         inputBlockTimer = 0.2f;
+
+        currentOption1 = "";
+        currentOption2 = "";
+        currentOption3 = "";
 
         isDialogueOpen = true;
 
@@ -262,8 +282,14 @@ public class DialogueManager : MonoBehaviour
         speakerText.text = currentSpeaker;
         dialogueText.text = currentFullLine;
 
-        if (currentSideQuestCallback == null)
+        if (currentSideQuestCallback != null)
+        {
+            ShowChoices(currentOption1, currentOption2, currentOption3);
+        }
+        else
+        {
             canCloseSingleLine = true;
+        }
     }
 
     public void EndDialogue()
@@ -283,6 +309,10 @@ public class DialogueManager : MonoBehaviour
         currentSideQuestCallback = null;
         canCloseSingleLine = false;
         inputBlockTimer = 0f;
+
+        currentOption1 = "";
+        currentOption2 = "";
+        currentOption3 = "";
 
         HideChoices();
 

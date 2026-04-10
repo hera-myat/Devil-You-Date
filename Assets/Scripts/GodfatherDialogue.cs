@@ -6,10 +6,10 @@ public class GodfatherDialogue : MonoBehaviour
     [Header("References")]
     public DialogueManager dialogueManager;
     public GodfatherRepentSequence repentSequence;
+    public MoralStateManager moralStateManager;
     public GameObject interactPrompt;
 
     private bool playerInRange = false;
-
     private bool hasShownPostRepentLine = false;
 
     void Start()
@@ -39,8 +39,8 @@ public class GodfatherDialogue : MonoBehaviour
 
         if (interactPrompt != null)
             interactPrompt.SetActive(false);
-        
-        // After repent
+
+        // After full repent sequence
         if (repentSequence != null && repentSequence.repentCompleted)
         {
             if (!hasShownPostRepentLine)
@@ -63,6 +63,22 @@ public class GodfatherDialogue : MonoBehaviour
             return;
         }
 
+        // If player already touched bloody area, block repentance options
+        if (moralStateManager != null && moralStateManager.hasTouchedBloodyArea)
+        {
+            dialogueManager.StartSideQuestDialogue(
+                "Godfather",
+                "There is nothing for you here now.",
+                "You don't need it.",
+                "",
+                "",
+                OnBlockedChoiceSelected
+            );
+
+            return;
+        }
+
+        // Normal dialogue
         dialogueManager.StartSideQuestDialogue(
             "Godfather",
             "You look troubled, my child. Tell me… why have you come?",
@@ -71,6 +87,15 @@ public class GodfatherDialogue : MonoBehaviour
             "I did what I had to do.",
             OnFirstChoiceSelected
         );
+    }
+
+    void OnBlockedChoiceSelected(int choice)
+    {
+        if (dialogueManager == null)
+            return;
+
+        dialogueManager.EndDialogue();
+        StartCoroutine(WaitForDialogueToCloseThenShowPrompt());
     }
 
     void OnFirstChoiceSelected(int choice)

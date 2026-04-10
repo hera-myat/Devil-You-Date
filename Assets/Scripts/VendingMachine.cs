@@ -83,7 +83,10 @@ public class VendingMachine : MonoBehaviour
         {
             dateDialogue.SetGiftItem(itemName);
 
-            if (!dateDialogue.hasTalkedToDate && !suspicionApplied && suspicionSystem != null)
+            if (GameProgressManager.Instance != null &&
+                !GameProgressManager.Instance.hasMetDate &&
+                !suspicionApplied &&
+                suspicionSystem != null)
             {
                 suspicionSystem.IncreaseSuspicion();
                 suspicionApplied = true;
