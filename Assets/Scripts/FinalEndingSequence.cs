@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class FinalEndingSequence : MonoBehaviour
 {
@@ -56,7 +57,10 @@ public class FinalEndingSequence : MonoBehaviour
 
         isPlaying = false;
 
-        // SceneManager.LoadScene("MainMenu");
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        
+        SceneManager.LoadScene("MainMenu");
     }
 
     IEnumerator ShowLine(string line)
