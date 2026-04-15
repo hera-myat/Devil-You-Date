@@ -29,6 +29,8 @@ public class SideQuestNPC : MonoBehaviour
     public DateEventManager dateEventManager;
     public string rewardItemId = "planner";
 
+    public ObjectiveUI objectiveUI;
+
     private bool playerInRange = false;
     private DialogueManager dialogueManager;
     private Animator anim;
@@ -391,6 +393,18 @@ public class SideQuestNPC : MonoBehaviour
                 if (!rewardAdded)
                 {
                     Debug.Log("Could not add planner because inventory is full.");
+                }
+                else
+                {
+                    if (GameProgressManager.Instance != null)
+                    {
+                        GameProgressManager.Instance.hasDiaryReward = true;
+                    }
+
+                    if (objectiveUI != null)
+                    {
+                        objectiveUI.ShowObjective("Objective: Return to your date and ask more questions.");
+                    }
                 }
             }
         }

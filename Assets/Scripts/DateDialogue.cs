@@ -11,6 +11,11 @@ public class DateDialogue : MonoBehaviour
     [Header("Quest Reward")]
     public string coinAwardItemId = "coinaward";
 
+    [Header("Objective UI")]
+    public ObjectiveUI objectiveUI;
+
+    private bool firstMeetingDone = false;
+
     [HideInInspector]
     public bool hasTalkedToDate = false;
 
@@ -20,6 +25,8 @@ public class DateDialogue : MonoBehaviour
     private int excuseIndex = 0;
     private bool requestLeaveChair = false;
 
+    private bool pendingObjectiveAfterLeave = false;
+
     private string[] leaveExcuses =
     {
         "I need to use the restroom for a while.",
@@ -28,7 +35,6 @@ public class DateDialogue : MonoBehaviour
         "I'll be right back."
     };
 
-    // Active special return conversation
     private string activeReturnEventId = "";
     private bool activeReturnLate = false;
     private bool eventTopic1Used = false;
@@ -50,7 +56,6 @@ public class DateDialogue : MonoBehaviour
             GameProgressManager.Instance.MarkMetDate();
         }
 
-        // New reward just returned
         if (dateEventManager != null && dateEventManager.HasPendingEvent())
         {
             dateEventManager.PlayerReturnedForCurrentEvent();
@@ -64,10 +69,15 @@ public class DateDialogue : MonoBehaviour
             return;
         }
 
-
         if (!string.IsNullOrEmpty(activeReturnEventId))
         {
             ShowReturnEventMenu(true);
+            return;
+        }
+
+        if (!firstMeetingDone)
+        {
+            StartFirstMeetingDialogue();
             return;
         }
 
@@ -78,22 +88,131 @@ public class DateDialogue : MonoBehaviour
             return;
         }
 
-        ShowMainMenu("Date", "Hi, how's it going?");
+        ShowMainMenu("Date", "Hello again.");
     }
 
+
+    void StartFirstMeetingDialogue()
+    {
+        if (dialogueManager == null)
+            return;
+
+        dialogueManager.StartSideQuestDialogue(
+            "Date",
+            "Hello.",
+            "Hi... sorry for being late.",
+            "Hello. Have you been waiting long?",
+            "You are my date, right?",
+            OnFirstMeetingChoice
+        );
+    }
+
+    void OnFirstMeetingChoice(int choice)
+    {
+        if (dialogueManager == null)
+            return;
+
+        if (choice == 1)
+        {
+            dialogueManager.ShowSideQuestFollowUp(
+                "Date",
+                "A little. But not long enough to be disappointed.",
+                "That's surprisingly nice of you.",
+                "You say that like you expected me to run.",
+                "Can we sit and talk?",
+                OnFirstMeetingChoice1
+            );
+        }
+        else if (choice == 2)
+        {
+            dialogueManager.ShowSideQuestFollowUp(
+                "Date",
+                "Not really. I like watching people before they notice they're being watched.",
+                "That sounds a little creepy.",
+                "So you've just been sitting here observing everyone?",
+                "You make it sound normal.",
+                OnFirstMeetingChoice2
+            );
+        }
+        else if (choice == 3)
+        {
+            dialogueManager.ShowSideQuestFollowUp(
+                "Date",
+                "That depends. Are you hoping I am?",
+                "That's not really an answer.",
+                "You're hard to read.",
+                "I think I found the right person.",
+                OnFirstMeetingChoice3
+            );
+        }
+    }
+
+    void OnFirstMeetingChoice1(int choice)
+    {
+        if (choice == 1)
+        {
+            FinishFirstMeeting("Date", "I try to be polite the first time I meet someone. It keeps people from leaving too early.");
+        }
+        else if (choice == 2)
+        {
+            FinishFirstMeeting("Date", "People leave for all kinds of reasons. Fear. Boredom. Guilt.");
+        }
+        else
+        {
+            FinishFirstMeeting("Date", "Of course. We have the whole evening ahead of us.");
+        }
+    }
+
+    void OnFirstMeetingChoice2(int choice)
+    {
+        if (choice == 1)
+        {
+            FinishFirstMeeting("Date", "Maybe. But honesty usually sounds strange at first.");
+        }
+        else if (choice == 2)
+        {
+            FinishFirstMeeting("Date", "Only the interesting ones.");
+        }
+        else
+        {
+            FinishFirstMeeting("Date", "A lot of strange things become normal if you sit with them long enough.");
+        }
+    }
+
+    void OnFirstMeetingChoice3(int choice)
+    {
+        if (choice == 1)
+        {
+            FinishFirstMeeting("Date", "I've been told I answer questions like I'm hiding something.");
+        }
+        else if (choice == 2)
+        {
+            FinishFirstMeeting("Date", "That usually makes people curious.");
+        }
+        else
+        {
+            FinishFirstMeeting("Date", "Good. Then let's see how long that feeling lasts.");
+        }
+    }
+
+    void FinishFirstMeeting(string speaker, string line)
+    {
+        firstMeetingDone = true;
+        ShowMainMenuFollowUp(speaker, line);
+    }
     void ShowMainMenu(string speaker, string line)
     {
         if (dialogueManager == null)
             return;
 
         string option2Text = string.IsNullOrEmpty(currentGift)
-            ? "Ask what he does for work"
+            ? "You seem like you notice everything."
             : "Give him " + currentGift;
 
         dialogueManager.StartSideQuestDialogue(
             speaker,
             line,
-            "Ask about your day",
+            "Do you come here often?",
             option2Text,
             GetCurrentExcuseText(),
             OnMainChoice
@@ -106,13 +225,13 @@ public class DateDialogue : MonoBehaviour
             return;
 
         string option2Text = string.IsNullOrEmpty(currentGift)
-            ? "Ask what he does for work"
+            ? "You seem like you notice everything."
             : "Give him " + currentGift;
 
         dialogueManager.ShowSideQuestFollowUp(
             speaker,
             line,
-            "Ask about your day",
+            "Do you come here often?",
             option2Text,
             GetCurrentExcuseText(),
             OnMainChoice
@@ -128,11 +247,11 @@ public class DateDialogue : MonoBehaviour
         {
             dialogueManager.ShowSideQuestFollowUp(
                 "Date",
-                "Pretty quiet. I walked a little, listened to people pass by, and watched the light change. It tells you more than people think.",
-                "You notice things like that a lot?",
-                "That sounds kind of lonely.",
+                "Enough to know what people look like when they're pretending to be comfortable.",
+                "And what do I look like?",
+                "You really study people that closely?",
                 "Let's talk about something else.",
-                OnDayChoice
+                OnComeHereChoice
             );
         }
         else if (choice == 2)
@@ -143,7 +262,14 @@ public class DateDialogue : MonoBehaviour
             }
             else
             {
-                ShowOccupationMenu();
+                dialogueManager.ShowSideQuestFollowUp(
+                    "Date",
+                    "Not everything. Just the things people try hardest to hide.",
+                    "That sounds dangerous.",
+                    "Maybe people hide things for a reason.",
+                    "You make that sound personal.",
+                    OnNoticeEverythingChoice
+                );
             }
         }
         else if (choice == 3)
@@ -159,8 +285,51 @@ public class DateDialogue : MonoBehaviour
             );
 
             requestLeaveChair = true;
+            pendingObjectiveAfterLeave = true;
         }
     }
+
+    void Update()
+    {
+        if (pendingObjectiveAfterLeave && dialogueManager != null && !dialogueManager.isDialogueOpen)
+        {
+            pendingObjectiveAfterLeave = false;
+            ShowNextObjective();
+        }
+    }
+
+    void OnComeHereChoice(int choice)
+    {
+        if (choice == 1)
+        {
+            ShowMainMenuFollowUp("Date", "Careful. Like you don't enjoy being read too quickly.");
+        }
+        else if (choice == 2)
+        {
+            ShowMainMenuFollowUp("Date", "Only when they give me a reason.");
+        }
+        else
+        {
+            ShowMainMenuFollowUp("Date", "Then pick another subject.");
+        }
+    }
+
+    void OnNoticeEverythingChoice(int choice)
+    {
+        if (choice == 1)
+        {
+            ShowMainMenuFollowUp("Date", "Only for the right person.");
+        }
+        else if (choice == 2)
+        {
+            ShowMainMenuFollowUp("Date", "Usually. But sometimes people hide things because they enjoy keeping them.");
+        }
+        else
+        {
+            ShowMainMenuFollowUp("Date", "Maybe it is.");
+        }
+    }
+
 
     void OnDayChoice(int choice)
     {
@@ -196,6 +365,8 @@ public class DateDialogue : MonoBehaviour
         );
     }
 
+
+
     void OnOccupationChoice(int choice)
     {
         if (dialogueManager == null)
@@ -222,6 +393,58 @@ public class DateDialogue : MonoBehaviour
         }
     }
 
+    void ShowNextObjective()
+    {
+        if (objectiveUI == null || GameProgressManager.Instance == null)
+            return;
+
+        // 1. Gift to Date already completed
+        if (inventoryManager != null && inventoryManager.HasItem("coinaward"))
+        {
+            if (!GameProgressManager.Instance.hasRepentReward)
+            {
+                objectiveUI.ShowObjective("Hint: I heard there's a church nearby... maybe I should take a look.");
+            }
+            else if (!GameProgressManager.Instance.hasBloodyAreaReward)
+            {
+                objectiveUI.ShowObjective("Hint: There is something suspicious around the police area... maybe I should take a look.");
+            }
+            else
+            {
+                objectiveUI.ShowObjective("Hint: I should go back to my date before it gets suspicious.");
+            }
+
+            return;
+        }
+
+        // 2. Orange trash-can / coin-search phase
+        if (GameProgressManager.Instance.hasStartedCoinSearch)
+        {
+            objectiveUI.ShowObjective("Hint: The orange trash can... maybe I should search it.");
+            return;
+        }
+
+        // 3. Garbage area / trash task
+        if (!GameProgressManager.Instance.hasTrashReward)
+        {
+            objectiveUI.ShowObjective("Hint: I remember there is something suspicious around the trash cans near the vending machines... maybe I should take a look.");
+        }
+        // 4. Church
+        else if (!GameProgressManager.Instance.hasRepentReward)
+        {
+            objectiveUI.ShowObjective("Hint: I heard there's a church nearby... maybe I should take a look.");
+        }
+        // 5. Bloody area
+        else if (!GameProgressManager.Instance.hasBloodyAreaReward)
+        {
+            objectiveUI.ShowObjective("Hint: There is something suspicious around the police area... maybe I should take a look.");
+        }
+        // 6. Final
+        else
+        {
+            objectiveUI.ShowObjective("Hint: I should go back to my date before it gets suspicious.");
+        }
+    }
     void OnPlayerOccupationChoice(int choice)
     {
         if (dialogueManager == null)
@@ -245,6 +468,11 @@ public class DateDialogue : MonoBehaviour
     {
         string gift = currentGift.ToLower();
         RemoveGiftFromInventory(gift);
+
+        if (GameProgressManager.Instance != null)
+        {
+            GameProgressManager.Instance.hasStartedCoinSearch = false;
+        }
 
         if (inventoryManager != null && !inventoryManager.HasItem(coinAwardItemId))
         {
@@ -486,6 +714,8 @@ public class DateDialogue : MonoBehaviour
         activeReturnLate = false;
         eventTopic1Used = false;
         eventTopic2Used = false;
+
+        ShowNextObjective();
     }
 
     string GetReturnIntroLine(string eventId, bool late)
@@ -493,32 +723,32 @@ public class DateDialogue : MonoBehaviour
         if (eventId == "planner")
         {
             return late
-                ? "You were gone longer than I expected. You came back looking like your mind's still somewhere else."
-                : "Oh... you're back. You look like you found what you went looking for.";
+                ? "You came back late... and with the look of someone who read something they weren't meant to."
+                : "You found something, didn't you? Something private.";
         }
 
         if (eventId == "cross")
         {
             return late
-                ? "You disappeared for a while... but you came back quieter. Almost like you left something behind."
-                : "You seem calmer than before. That's rare.";
+                ? "You were gone long enough to pray... or long enough to regret."
+                : "You seem quieter. People usually get that look when they ask for forgiveness.";
         }
 
         if (eventId == "trashclean")
         {
             return late
-                ? "You took your time. You look tired... like you've been trying to make something disappear."
-                : "You look tired. Were you doing something useful, or just avoiding me?";
+                ? "You took your time. You smell like dust, cardboard, and something almost scrubbed away."
+                : "You came back smelling like dust and cardboard. Trying to clean something up?";
         }
 
         if (eventId == "knife")
         {
             return late
-                ? "Something happened out there, didn't it? You look like the night followed you back."
-                : "You look like you've been somewhere unpleasant. Your face changed before your words did.";
+                ? "You look pale. Like something recognized you before you understood why."
+                : "You look different. Like you remembered something you tried to bury.";
         }
 
-        return late ? "You were gone longer than I expected." : "Oh... you're alright.";
+        return late ? "You were gone longer than I expected." : "You're back.";
     }
 
     string GetReturnOption1(string eventId)
@@ -661,3 +891,4 @@ public class DateDialogue : MonoBehaviour
         return "Okay. I'll wait here.";
     }
 }
+

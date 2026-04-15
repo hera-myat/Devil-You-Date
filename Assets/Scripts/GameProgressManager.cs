@@ -7,6 +7,8 @@ public class GameProgressManager : MonoBehaviour
     [Header("Date Progress")]
     public bool hasMetDate = false;
 
+    public bool hasStartedCoinSearch = false;
+
     [Header("Side Quest Rewards")]
     public bool hasBloodyAreaReward = false;
     public bool hasDiaryReward = false;
@@ -58,5 +60,6 @@ public class GameProgressManager : MonoBehaviour
         hasDiaryReward = false;
         hasTrashReward = false;
         hasRepentReward = false;
+        hasStartedCoinSearch = false;
     }
 }

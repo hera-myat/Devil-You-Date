@@ -28,6 +28,8 @@ public class GodfatherRepentSequence : MonoBehaviour
 
     public bool repentCompleted = false;
 
+    public ObjectiveUI objectiveUI;
+
     private string[] lines =
     {
         "You close your eyes and press your hands together.",
@@ -121,20 +123,28 @@ public class GodfatherRepentSequence : MonoBehaviour
             }
         }
 
-        if (GameProgressManager.Instance != null)
+        if (rewardAdded)
         {
-            GameProgressManager.Instance.UnlockRepentReward();
-        }
+            if (GameProgressManager.Instance != null)
+            {
+                GameProgressManager.Instance.UnlockRepentReward();
+            }
 
-        if (rewardAdded && dateEventManager != null)
-        {
-            dateEventManager.StartReturnEvent(crossItemId);
+            if (objectiveUI != null)
+            {
+                objectiveUI.ShowObjective("Objective: Return to your date and continue the conversation.");
+            }
+
+            if (dateEventManager != null)
+            {
+                dateEventManager.StartReturnEvent(crossItemId);
+            }
         }
 
         isPlaying = false;
     }
 
-    IEnumerator ShowLineAndWaitForClick(string line)
+        IEnumerator ShowLineAndWaitForClick(string line)
     {
         if (sequenceText == null)
             yield break;

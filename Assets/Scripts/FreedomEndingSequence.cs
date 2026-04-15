@@ -24,6 +24,9 @@ public class FreedomEndingSequence : MonoBehaviour
     public GameObject invisibleWall1;
     public GameObject invisibleWall2;
 
+    [Header("Door")]
+    public DoorEndingTrigger exitDoor;
+
     [Header("Debug")]
     public bool debugLogs = true;
 
@@ -162,6 +165,9 @@ public class FreedomEndingSequence : MonoBehaviour
 
         if (invisibleWall2 != null)
             invisibleWall2.SetActive(true);
+
+        if (exitDoor != null)
+            exitDoor.EnableExit();
 
         yield return StartCoroutine(FadeFromBlack());
     }

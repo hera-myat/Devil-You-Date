@@ -81,7 +81,7 @@ public class GodfatherDialogue : MonoBehaviour
         // Normal dialogue
         dialogueManager.StartSideQuestDialogue(
             "Godfather",
-            "You look troubled, my child. Tell me… why have you come?",
+            "You look troubled, my child. Tell me... why have you come?",
             "I've come to repent.",
             "I don't know what I'm supposed to do anymore.",
             "I did what I had to do.",
@@ -107,7 +107,7 @@ public class GodfatherDialogue : MonoBehaviour
         {
             dialogueManager.ShowSideQuestSingleLine(
                 "Godfather",
-                "Repentance is not spoken with the lips alone. Close your eyes… and place your hands together."
+                "Repentance is not spoken with the lips alone. Close your eyes... and place your hands together."
             );
 
             StartCoroutine(StartRepentAfterDialogueCloses());

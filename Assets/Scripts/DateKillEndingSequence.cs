@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class DateKillEndingSequence : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class DateKillEndingSequence : MonoBehaviour
     [Header("Timing")]
     public float fadeDuration = 1.5f;
     public float continueHintDelay = 1.5f;
+    public float waitBeforeLoadMenu = 0.5f;
 
     [Header("References")]
     public DateEventManager dateEventManager;
@@ -23,6 +25,9 @@ public class DateKillEndingSequence : MonoBehaviour
     [Header("Optional Audio")]
     public AudioSource audioSource;
     public AudioClip endingSting;
+
+    [Header("Scene")]
+    public string mainMenuSceneName = "MainMenu";
 
     [Header("Ending State")]
     public bool endingCompleted = false;
@@ -72,7 +77,9 @@ public class DateKillEndingSequence : MonoBehaviour
         yield return StartCoroutine(FadeToBlack());
 
         if (sequenceText != null)
+        {
             sequenceText.gameObject.SetActive(true);
+        }
 
         for (int i = 0; i < lines.Length; i++)
         {
@@ -81,6 +88,13 @@ public class DateKillEndingSequence : MonoBehaviour
 
         endingCompleted = true;
         isPlaying = false;
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        yield return new WaitForSeconds(waitBeforeLoadMenu);
+
+        SceneManager.LoadScene(mainMenuSceneName);
     }
 
     IEnumerator ShowLineAndWaitForClick(string line)

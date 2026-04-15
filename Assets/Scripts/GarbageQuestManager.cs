@@ -3,6 +3,10 @@ using TMPro;
 
 public class GarbageQuestManager : MonoBehaviour
 {
+
+    public ObjectiveUI objectiveUI;
+
+
     [Header("References")]
     public InventoryManager inventoryManager;
     public SuspicionSystem suspicionSystem;
@@ -35,6 +39,7 @@ public class GarbageQuestManager : MonoBehaviour
 
     [Header("Reward")]
     public string rewardItemId = "trashclean";
+
 
     private bool introShown = false;
     private bool failureHandled = false;
@@ -158,14 +163,22 @@ public class GarbageQuestManager : MonoBehaviour
                 }
             }
 
-            if (GameProgressManager.Instance != null)
+            if (rewardAdded)
             {
-                GameProgressManager.Instance.UnlockTrashReward();
-            }
+                if (GameProgressManager.Instance != null)
+                {
+                    GameProgressManager.Instance.hasTrashReward = true;
+                }
 
-            if (rewardAdded && dateEventManager != null)
-            {
-                dateEventManager.StartReturnEvent(rewardItemId);
+                if (objectiveUI != null)
+                {
+                    objectiveUI.ShowObjective("Objective: Search the trash cans near the vending machines for a coin.");
+                }
+
+                if (dateEventManager != null)
+                {
+                    dateEventManager.StartReturnEvent(rewardItemId);
+                }
             }
 
             ShowMessage("You finished cleaning the area.");

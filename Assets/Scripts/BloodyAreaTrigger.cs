@@ -22,6 +22,8 @@ public class BloodyAreaTrigger : MonoBehaviour
     [Header("Reward")]
     public string rewardItemId = "knife";
 
+    public ObjectiveUI objectiveUI;
+
     private bool playerInside = false;
     private bool hasInteractedInArea = false;
     private bool enterDialoguePlayed = false;
@@ -151,7 +153,12 @@ public class BloodyAreaTrigger : MonoBehaviour
 
         if (GameProgressManager.Instance != null)
         {
-            GameProgressManager.Instance.UnlockBloodyAreaReward();
+            GameProgressManager.Instance.hasBloodyAreaReward = true;
+        }
+
+        if (objectiveUI != null)
+        {
+            objectiveUI.ShowObjective("Objective: Return to your date before something changes.");
         }
 
         if (dateEventManager != null)
