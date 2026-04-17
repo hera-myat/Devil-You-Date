@@ -20,6 +20,8 @@ public class FinalEndingSequence : MonoBehaviour
 
     public AudioSource previousEndingAudio;
 
+    public AudioSource spawnAreaBGM;
+
     private bool isPlaying = false;
 
     private string[] lines =
@@ -52,16 +54,25 @@ public class FinalEndingSequence : MonoBehaviour
         if (playerLook != null)
             playerLook.enabled = false;
 
-        // Switch to second BGM
-        // stop first BGM explicitly
+        // Stop first ending BGM
         if (previousEndingAudio != null)
         {
             previousEndingAudio.Stop();
+            previousEndingAudio.enabled = false;
         }
 
-        // play second BGM
+        // Stop SpawnArea BGM too
+        if (spawnAreaBGM != null)
+        {
+            spawnAreaBGM.Stop();
+            spawnAreaBGM.enabled = false;
+        }
+
+        // Play second BGM
         if (audioSource != null && outsideBGM != null)
         {
+            audioSource.enabled = true;
+            audioSource.Stop();
             audioSource.clip = outsideBGM;
             audioSource.loop = true;
             audioSource.Play();

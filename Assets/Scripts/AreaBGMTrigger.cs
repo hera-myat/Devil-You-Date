@@ -6,6 +6,9 @@ public class AreaBGMTrigger : MonoBehaviour
     public AudioSource bgmSource;
     public AudioClip bgmClip;
 
+    [Header("Other BGM")]
+    public AudioSource spawnAreaBGM;
+
     private bool isPlaying = false;
 
     void Start()
@@ -21,6 +24,13 @@ public class AreaBGMTrigger : MonoBehaviour
     {
         if (!other.CompareTag("Player"))
             return;
+
+        // Stop previous area BGM (Spawn Area)
+        if (spawnAreaBGM != null)
+        {
+            spawnAreaBGM.Stop();
+            spawnAreaBGM.enabled = false;
+        }
 
         PlayBGM();
     }

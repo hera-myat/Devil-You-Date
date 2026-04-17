@@ -23,6 +23,7 @@ public class NormalEndingSequence : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip preTeleportBGM;
     public AudioClip asylumBGM;
+    public AudioSource spawnAreaBGM;
 
     [Header("Timing")]
     public float preLineDelay = 1.5f;
@@ -106,6 +107,12 @@ public class NormalEndingSequence : MonoBehaviour
 
         if (playerMovement != null) playerMovement.enabled = false;
         if (playerLook != null) playerLook.enabled = false;
+
+        if (spawnAreaBGM != null)
+        {
+            spawnAreaBGM.Stop();
+            spawnAreaBGM.enabled = false;
+        }
 
         DisableAllOtherAudio();
         StartCoroutine(KeepOtherAudioDisabled());
