@@ -27,6 +27,10 @@ public class FreedomEndingSequence : MonoBehaviour
     [Header("Door")]
     public DoorEndingTrigger exitDoor;
 
+    [Header("Audio")]
+    public AudioSource audioSource;
+    public AudioClip goodEndingIntroBGM;
+
     [Header("Debug")]
     public bool debugLogs = true;
 
@@ -95,6 +99,14 @@ public class FreedomEndingSequence : MonoBehaviour
 
         if (playerLook != null)
             playerLook.enabled = false;
+
+        // Play first good ending BGM
+        if (audioSource != null && goodEndingIntroBGM != null)
+        {
+            audioSource.clip = goodEndingIntroBGM;
+            audioSource.loop = true;
+            audioSource.Play();
+        }
 
         yield return StartCoroutine(FadeToBlack());
 

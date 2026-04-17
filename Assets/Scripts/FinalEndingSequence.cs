@@ -14,6 +14,12 @@ public class FinalEndingSequence : MonoBehaviour
     public MonoBehaviour playerMovement;
     public MonoBehaviour playerLook;
 
+    [Header("Audio")]
+    public AudioSource audioSource;
+    public AudioClip outsideBGM;
+
+    public AudioSource previousEndingAudio;
+
     private bool isPlaying = false;
 
     private string[] lines =
@@ -35,6 +41,7 @@ public class FinalEndingSequence : MonoBehaviour
         StartCoroutine(PlaySequence());
     }
 
+
     IEnumerator PlaySequence()
     {
         isPlaying = true;
@@ -44,6 +51,21 @@ public class FinalEndingSequence : MonoBehaviour
 
         if (playerLook != null)
             playerLook.enabled = false;
+
+        // Switch to second BGM
+        // stop first BGM explicitly
+        if (previousEndingAudio != null)
+        {
+            previousEndingAudio.Stop();
+        }
+
+        // play second BGM
+        if (audioSource != null && outsideBGM != null)
+        {
+            audioSource.clip = outsideBGM;
+            audioSource.loop = true;
+            audioSource.Play();
+        }
 
         yield return StartCoroutine(FadeToBlack());
 
@@ -59,7 +81,7 @@ public class FinalEndingSequence : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-        
+
         SceneManager.LoadScene("MainMenu");
     }
 

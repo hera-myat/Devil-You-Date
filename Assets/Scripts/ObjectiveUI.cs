@@ -5,7 +5,7 @@ using System.Collections;
 public class ObjectiveUI : MonoBehaviour
 {
     public TextMeshProUGUI objectiveText;
-    public float showDuration = 4f;
+    public float showDuration = 8f;
 
     private Coroutine currentRoutine;
 

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class DateDialogue : MonoBehaviour
 {
@@ -7,6 +7,7 @@ public class DateDialogue : MonoBehaviour
     public SuspicionSystem suspicionSystem;
     public InventoryManager inventoryManager;
     public DateEventManager dateEventManager;
+    public NormalEndingSequence normalEndingSequence;
 
     [Header("Quest Reward")]
     public string coinAwardItemId = "coinaward";
@@ -47,6 +48,29 @@ public class DateDialogue : MonoBehaviour
 
         if (dialogueManager.isDialogueOpen)
             return;
+
+        if (inventoryManager != null && inventoryManager.HasItem("knife"))
+        {
+            // stop any return-to-date event / timer
+            if (dateEventManager != null)
+            {
+                dateEventManager.LockDateSystem();
+            }
+
+            activeReturnEventId = "";
+            activeReturnLate = false;
+            eventTopic1Used = false;
+            eventTopic2Used = false;
+            pendingObjectiveAfterLeave = false;
+            requestLeaveChair = false;
+            leftWithExcuse = false;
+
+            if (normalEndingSequence != null)
+            {
+                normalEndingSequence.StartNormalEnding();
+            }
+            return;
+        }
 
         hasTalkedToDate = true;
         requestLeaveChair = false;
@@ -395,54 +419,44 @@ public class DateDialogue : MonoBehaviour
 
     void ShowNextObjective()
     {
-        if (objectiveUI == null || GameProgressManager.Instance == null)
+        if (objectiveUI == null || inventoryManager == null)
             return;
 
-        // 1. Gift to Date already completed
-        if (inventoryManager != null && inventoryManager.HasItem("coinaward"))
-        {
-            if (!GameProgressManager.Instance.hasRepentReward)
-            {
-                objectiveUI.ShowObjective("Hint: I heard there's a church nearby... maybe I should take a look.");
-            }
-            else if (!GameProgressManager.Instance.hasBloodyAreaReward)
-            {
-                objectiveUI.ShowObjective("Hint: There is something suspicious around the police area... maybe I should take a look.");
-            }
-            else
-            {
-                objectiveUI.ShowObjective("Hint: I should go back to my date before it gets suspicious.");
-            }
+        bool hasCoinAward = inventoryManager.HasItem("coinaward");
+        bool hasPlanner = inventoryManager.HasItem("planner");
+        bool hasTrashClean = inventoryManager.HasItem("trashclean");
+        bool hasCross = inventoryManager.HasItem("cross");
 
+        // All done → no hint (good ending handles it)
+        if (hasCoinAward && hasPlanner && hasTrashClean && hasCross)
+            return;
+
+        // FIRST step → go to vending/trash area
+        if (!hasCoinAward)
+        {
+            objectiveUI.ShowObjective("Objective: Check the trash cans near the vending machines.");
             return;
         }
 
-        // 2. Orange trash-can / coin-search phase
-        if (GameProgressManager.Instance.hasStartedCoinSearch)
+        // SECOND → diary
+        if (!hasPlanner)
         {
-            objectiveUI.ShowObjective("Hint: The orange trash can... maybe I should search it.");
+            objectiveUI.ShowObjective("Objective: I heard someone scream nearby... I should look around.");
             return;
         }
 
-        // 3. Garbage area / trash task
-        if (!GameProgressManager.Instance.hasTrashReward)
+        // THIRD → garbage cleaning
+        if (!hasTrashClean)
         {
-            objectiveUI.ShowObjective("Hint: I remember there is something suspicious around the trash cans near the vending machines... maybe I should take a look.");
+            objectiveUI.ShowObjective("Objective: Something feels off near the police area... I should check it out.");
+            return;
         }
-        // 4. Church
-        else if (!GameProgressManager.Instance.hasRepentReward)
+
+        // FOURTH → church
+        if (!hasCross)
         {
-            objectiveUI.ShowObjective("Hint: I heard there's a church nearby... maybe I should take a look.");
-        }
-        // 5. Bloody area
-        else if (!GameProgressManager.Instance.hasBloodyAreaReward)
-        {
-            objectiveUI.ShowObjective("Hint: There is something suspicious around the police area... maybe I should take a look.");
-        }
-        // 6. Final
-        else
-        {
-            objectiveUI.ShowObjective("Hint: I should go back to my date before it gets suspicious.");
+            objectiveUI.ShowObjective("Objective: I heard there's a church nearby... maybe I should take a look.");
+            return;
         }
     }
     void OnPlayerOccupationChoice(int choice)
@@ -624,7 +638,7 @@ public class DateDialogue : MonoBehaviour
             return;
         }
 
-        if (!string.IsNullOrEmpty(remaining1) && choice == 1)
+        if (choice == 1)
         {
             if (!eventTopic1Used)
             {
@@ -653,9 +667,12 @@ public class DateDialogue : MonoBehaviour
                 );
                 return;
             }
+
+            LeaveAfterReturnEvent(GetReturnLeaveResponse(activeReturnEventId, activeReturnLate));
+            return;
         }
 
-        if (!string.IsNullOrEmpty(remaining2) && choice == 2)
+        if (choice == 2)
         {
             if (!eventTopic2Used)
             {
@@ -670,9 +687,45 @@ public class DateDialogue : MonoBehaviour
                 );
                 return;
             }
+
+            dialogueManager.ShowSideQuestFollowUp(
+                "Date",
+                GetReturnExtraResponse(activeReturnEventId, activeReturnLate),
+                GetRemainingReturnOption1(),
+                "",
+                GetReturnLeaveOption(activeReturnEventId),
+                OnReturnEventFollowUpChoice
+            );
+            return;
         }
 
         LeaveAfterReturnEvent(GetReturnLeaveResponse(activeReturnEventId, activeReturnLate));
+    }
+
+    string GetReturnExtraResponse(string eventId, bool late)
+    {
+        if (eventId == "planner")
+            return "Different? Maybe. People always look a little different after reading something they shouldn't.";
+
+        if (eventId == "cross")
+            return "Strange is just another word for honest, when honesty makes people uncomfortable.";
+
+        if (eventId == "trashclean")
+            return "Ordinary things are usually the best place to hide unusual intentions.";
+
+        if (eventId == "knife")
+            return "Maybe I do. Or maybe you just look like someone waiting to be understood.";
+
+        return "Maybe that's because I'm still deciding what to make of you.";
+    }
+
+    string GetReturnExtraOption(string eventId)
+    {
+        if (eventId == "planner") return "You seem different tonight.";
+        if (eventId == "cross") return "You're speaking strangely again.";
+        if (eventId == "trashclean") return "You always make ordinary things sound suspicious.";
+        if (eventId == "knife") return "You keep looking at me like you know something.";
+        return "You seem hard to read.";
     }
 
     string GetRemainingReturnOption1()
@@ -688,15 +741,19 @@ public class DateDialogue : MonoBehaviour
 
     string GetRemainingReturnOption2()
     {
+        // First screen: show the normal second topic
         if (!eventTopic1Used && !eventTopic2Used)
             return GetReturnOption2(activeReturnEventId);
 
-        if (!eventTopic1Used && eventTopic2Used)
-            return "";
-
+        // After topic 1 is used: show extra option
         if (eventTopic1Used && !eventTopic2Used)
-            return GetReturnLeaveOption(activeReturnEventId);
+            return GetReturnExtraOption(activeReturnEventId);
 
+        // After topic 2 is used: show extra option
+        if (!eventTopic1Used && eventTopic2Used)
+            return GetReturnExtraOption(activeReturnEventId);
+
+        // Both used: no second option
         return "";
     }
 

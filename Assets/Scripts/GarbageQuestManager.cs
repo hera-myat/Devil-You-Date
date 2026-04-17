@@ -3,10 +3,6 @@ using TMPro;
 
 public class GarbageQuestManager : MonoBehaviour
 {
-
-    public ObjectiveUI objectiveUI;
-
-
     [Header("References")]
     public InventoryManager inventoryManager;
     public SuspicionSystem suspicionSystem;
@@ -168,11 +164,6 @@ public class GarbageQuestManager : MonoBehaviour
                 if (GameProgressManager.Instance != null)
                 {
                     GameProgressManager.Instance.hasTrashReward = true;
-                }
-
-                if (objectiveUI != null)
-                {
-                    objectiveUI.ShowObjective("Objective: Search the trash cans near the vending machines for a coin.");
                 }
 
                 if (dateEventManager != null)
