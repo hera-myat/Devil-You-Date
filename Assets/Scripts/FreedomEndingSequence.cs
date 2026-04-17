@@ -31,6 +31,8 @@ public class FreedomEndingSequence : MonoBehaviour
     public AudioSource audioSource;
     public AudioClip goodEndingIntroBGM;
 
+    public AudioSource spawnAreaBGM;
+
     [Header("Debug")]
     public bool debugLogs = true;
 
@@ -100,9 +102,18 @@ public class FreedomEndingSequence : MonoBehaviour
         if (playerLook != null)
             playerLook.enabled = false;
 
+        // Stop SpawnArea BGM first
+        if (spawnAreaBGM != null)
+        {
+            spawnAreaBGM.Stop();
+            spawnAreaBGM.enabled = false;
+        }
+
         // Play first good ending BGM
         if (audioSource != null && goodEndingIntroBGM != null)
         {
+            audioSource.enabled = true;
+            audioSource.Stop();
             audioSource.clip = goodEndingIntroBGM;
             audioSource.loop = true;
             audioSource.Play();

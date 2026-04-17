@@ -41,6 +41,8 @@ public class DateKillEndingSequence : MonoBehaviour
     [Header("Optional Audio")]
     public AudioClip endingSting;
 
+    public AudioSource spawnAreaBGM;
+
     [Header("Scene")]
     public string mainMenuSceneName = "MainMenu";
 
@@ -91,6 +93,12 @@ public class DateKillEndingSequence : MonoBehaviour
 
         if (playerLook != null)
             playerLook.enabled = false;
+
+        if (spawnAreaBGM != null)
+        {
+            spawnAreaBGM.Stop();
+            spawnAreaBGM.enabled = false;
+        }
 
         if (audioSource != null && endingSting != null)
             audioSource.PlayOneShot(endingSting);
