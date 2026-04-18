@@ -32,6 +32,7 @@ public class FreedomEndingSequence : MonoBehaviour
     public AudioClip goodEndingIntroBGM;
 
     public AudioSource spawnAreaBGM;
+    public AudioSource churchAreaBGM;
 
     [Header("Debug")]
     public bool debugLogs = true;
@@ -42,7 +43,7 @@ public class FreedomEndingSequence : MonoBehaviour
     {
         "You see your date standing in front of you.",
         "You give a small wave.",
-        "\"It's surprising… that you made this choice.\"",
+        "\"It's surprising... that you made this choice.\"",
         "\"It's a shame. I was hoping to keep you a little longer.\"",
         "\"But it seems I've lost a soul from my place.\"",
         "...",
@@ -50,12 +51,12 @@ public class FreedomEndingSequence : MonoBehaviour
         "\"...I'm free to go?\"",
         "\"Yes.\"",
         "\"You're free to go.\"",
-        "",
+        "...",
         "Flames begin to flicker around him.",
         "You freeze.",
         "Something about this isn't right.",
         "Strange symbols start forming in the air.",
-        "They twist… watching you.",
+        "They twist... watching you.",
         "\"...He's not human.\"",
         "\"...He's a demon.\"",
         "\"I need to leave.\""
@@ -81,7 +82,8 @@ public class FreedomEndingSequence : MonoBehaviour
 
     public void StartFreedomEnding()
     {
-        if (isPlaying) return;
+        if (isPlaying)
+            return;
 
         if (debugLogs)
             Debug.Log("FreedomEndingSequence: StartFreedomEnding called.");
@@ -102,17 +104,18 @@ public class FreedomEndingSequence : MonoBehaviour
         if (playerLook != null)
             playerLook.enabled = false;
 
-        // Stop SpawnArea BGM first
-        if (spawnAreaBGM != null)
+        // Stop church BGM first
+        AudioSource[] allSources = FindObjectsOfType<AudioSource>();
+
+        foreach (AudioSource src in allSources)
         {
-            spawnAreaBGM.Stop();
-            spawnAreaBGM.enabled = false;
+            src.Stop();
         }
+
 
         // Play first good ending BGM
         if (audioSource != null && goodEndingIntroBGM != null)
         {
-            audioSource.enabled = true;
             audioSource.Stop();
             audioSource.clip = goodEndingIntroBGM;
             audioSource.loop = true;

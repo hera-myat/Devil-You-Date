@@ -6,10 +6,10 @@ public class AreaBGMTrigger : MonoBehaviour
     public AudioSource bgmSource;
     public AudioClip bgmClip;
 
-    [Header("Other BGM")]
-    public AudioSource spawnAreaBGM;
+    [Header("Default BGM")]
+    public SpawnAreaBGM spawnAreaBGM;
 
-    private bool isPlaying = false;
+    private bool playerInside = false;
 
     void Start()
     {
@@ -17,6 +17,9 @@ public class AreaBGMTrigger : MonoBehaviour
         {
             bgmSource.playOnAwake = false;
             bgmSource.loop = true;
+
+            if (bgmClip != null)
+                bgmSource.clip = bgmClip;
         }
     }
 
@@ -25,14 +28,16 @@ public class AreaBGMTrigger : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
-        // Stop previous area BGM (Spawn Area)
-        if (spawnAreaBGM != null)
-        {
-            spawnAreaBGM.Stop();
-            spawnAreaBGM.enabled = false;
-        }
+        if (playerInside)
+            return;
 
-        PlayBGM();
+        playerInside = true;
+
+        if (spawnAreaBGM != null)
+            spawnAreaBGM.StopBGM();
+
+        if (bgmSource != null && !bgmSource.isPlaying)
+            bgmSource.Play();
     }
 
     private void OnTriggerExit(Collider other)
@@ -40,27 +45,12 @@ public class AreaBGMTrigger : MonoBehaviour
         if (!other.CompareTag("Player"))
             return;
 
-        StopBGM();
-    }
+        playerInside = false;
 
-    void PlayBGM()
-    {
-        if (bgmSource == null || bgmClip == null || isPlaying)
-            return;
-
-        bgmSource.clip = bgmClip;
-        bgmSource.Play();
-        isPlaying = true;
-    }
-
-    void StopBGM()
-    {
-        if (bgmSource == null)
-            return;
-
-        if (bgmSource.isPlaying)
+        if (bgmSource != null && bgmSource.isPlaying)
             bgmSource.Stop();
 
-        isPlaying = false;
+        if (spawnAreaBGM != null)
+            spawnAreaBGM.PlayBGM();
     }
 }

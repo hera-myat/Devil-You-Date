@@ -27,7 +27,7 @@ public class NormalEndingSequence : MonoBehaviour
 
     [Header("Timing")]
     public float preLineDelay = 1.5f;
-    public float lookAroundDuration = 8f;
+    public float lookAroundDuration = 10f;
     public float endWaitTime = 2f;
 
     private bool isPlaying = false;

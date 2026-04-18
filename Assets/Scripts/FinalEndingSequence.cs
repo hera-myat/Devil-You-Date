@@ -28,7 +28,7 @@ public class FinalEndingSequence : MonoBehaviour
     {
         "You reach the door.",
         "Your hand trembles as you walk through.",
-        "For a moment… you feel like something is watching you.",
+        "For a moment... you feel like something is watching you.",
         "But nothing stops you.",
         "You step outside.",
         "You made it out.",
