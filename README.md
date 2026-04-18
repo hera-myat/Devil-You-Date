@@ -2,9 +2,7 @@
 
 A 3D single-player psychological horror game developed in Unity. Enter a buddy hangout or a blind date with a seemingly ordinary human, unaware that a hidden demon feeds on past evil actions, manipulation, betrayal, toxic relationships, or violent crimes, and grows stronger in proportion to the severity of that corruption.
 
-Through grungy dialogue, ruthless choices, and investigative side quests, players must expose hidden identities while battling their own corruption before the demon awakens to devour the one most stained by their past.
-
---
+Through grungy dialogue, ruthless choices, and investigative side quests, players must expose hidden identities while battling their own corruption before the demon awakens to devour the one most stained by their past.  
 
 ## Team Roles
 
