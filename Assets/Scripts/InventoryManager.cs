@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class InventoryManager : MonoBehaviour
 {
@@ -33,41 +34,57 @@ public class InventoryManager : MonoBehaviour
     public Sprite metalCanIcon;
     public Sprite cigaretteIcon;
 
-
     private string[] inventory = new string[4];
     private int selectedSlotIndex = 0;
+
+    public event Action<int, string> OnSelectedSlotChanged;
 
     void Start()
     {
         UpdateInventoryUI();
         UpdateSelectedSlot();
+        NotifySelectedSlotChanged();
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            selectedSlotIndex = 0;
-            UpdateSelectedSlot();
+            SetSelectedSlot(0);
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            selectedSlotIndex = 1;
-            UpdateSelectedSlot();
+            SetSelectedSlot(1);
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            selectedSlotIndex = 2;
-            UpdateSelectedSlot();
+            SetSelectedSlot(2);
         }
 
         if (Input.GetKeyDown(KeyCode.Alpha4))
         {
-            selectedSlotIndex = 3;
-            UpdateSelectedSlot();
+            SetSelectedSlot(3);
         }
+    }
+
+    void SetSelectedSlot(int newIndex)
+    {
+        if (newIndex < 0 || newIndex >= inventory.Length)
+            return;
+
+        if (selectedSlotIndex == newIndex)
+            return;
+
+        selectedSlotIndex = newIndex;
+        UpdateSelectedSlot();
+        NotifySelectedSlotChanged();
+    }
+
+    void NotifySelectedSlotChanged()
+    {
+        OnSelectedSlotChanged?.Invoke(selectedSlotIndex, GetSelectedItem());
     }
 
     public bool AddItem(string itemId)
@@ -78,6 +95,7 @@ public class InventoryManager : MonoBehaviour
             {
                 inventory[i] = itemId;
                 UpdateInventoryUI();
+                NotifySelectedSlotChanged();
                 return true;
             }
         }
@@ -94,6 +112,7 @@ public class InventoryManager : MonoBehaviour
             {
                 inventory[i] = "";
                 UpdateInventoryUI();
+                NotifySelectedSlotChanged();
                 return true;
             }
         }
@@ -112,6 +131,7 @@ public class InventoryManager : MonoBehaviour
 
         inventory[selectedSlotIndex] = "";
         UpdateInventoryUI();
+        NotifySelectedSlotChanged();
         return true;
     }
 

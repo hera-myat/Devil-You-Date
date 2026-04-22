@@ -9,6 +9,8 @@ public class GarbageBinDropoff : MonoBehaviour
     public GameObject interactPrompt;
     public TextMeshProUGUI resultText;
 
+    public GarbageHintManager garbageHintManager;
+
     [Header("Bin Settings")]
     public string acceptedCategory = "paper"; //paper, plastic, metal, general
 
@@ -59,6 +61,9 @@ public class GarbageBinDropoff : MonoBehaviour
 
         garbageQuestManager.RegisterTrashThrown(selectedItem);
         ShowMessage("Thrown away.");
+
+        if (garbageHintManager != null)
+            garbageHintManager.RefreshHint();
     }
 
     bool ItemMatchesBin(string itemId)
