@@ -1,6 +1,8 @@
 # ❤️🖤 Devil You Date 🖤❤️
 
-<img width="505" height="286" alt="Screenshot 2026-04-24 at 17 55 43" src="https://github.com/user-attachments/assets/5fd5ae76-8316-4f9e-8f0c-360d57a3f7bb" />
+<div align="center">
+  <img width="505" height="286" alt="Screenshot 2026-04-24 at 17 55 43" src="https://github.com/user-attachments/assets/5fd5ae76-8316-4f9e-8f0c-360d57a3f7bb" />
+</div>
 
 <br>
 
@@ -12,15 +14,15 @@ Through grungy dialogue, ruthless choices, and investigative side quests, player
 <br>
 ⚠️ Warning: Gore, Blood, Language, SFX
 
-## Team Roles
+## 🤍 Team Roles 🤍
 
-- Project Manager (PM): Khin Yuupar Myat
-- Lead Developer (LDev): Xiaoxuan Zhen
-- Lead Designer (LDes): Eric Flores
+- Project Manager: [Khin Yuupar Myat](https://github.com/hera-myat)
+- Lead Developer: [Xiaoxuan Zhen](https://github.com/redbean0726)
+- Lead Designer: [Eric Flores](https://github.com/OminousRose)
 
-## Related Links
+## 🩶 Related Links
 
-Project Document: https://docs.google.com/document/d/1NpsuDNx9EAXijdP5lQm81GCR6kDnomZE3dDaVuw-JCI/edit?usp=sharing
+Design Document: https://docs.google.com/document/d/1NpsuDNx9EAXijdP5lQm81GCR6kDnomZE3dDaVuw-JCI/edit?usp=sharing
 
 Project Video: [coming soon]
 
