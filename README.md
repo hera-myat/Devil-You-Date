@@ -27,12 +27,12 @@ Through grungy dialogue, ruthless choices, and investigative side quests, player
 
 ## ❤️ Game Release ❤️
 
-- Download Here: [Devil You Date](https://drive.google.com/file/d/1Kf1EmDcdv7A7hXFlSTvG5YnvBGo3RRPx/view?usp=drive_link)
+- Download Here: [Devil You Date](https://drive.google.com/file/d/1Kf1EmDcdv7A7hXFlSTvG5YnvBGo3RRPx/view?usp=drive_link)<br>
 *Thank you for downloading our game! Hope you enjoy “Devil You Date”.*
 
 ## Team Contributions
 
-# 🐈‍⬛ Khin Yuupar Myat (PM)
+### 🐈‍⬛ Khin Yuupar Myat (PM)
 
 - Led project organization, documentation, scheduling, and GitHub management
 - Designed and built major environments (asylum, church, quest areas, and key narrative spaces)
@@ -40,7 +40,7 @@ Through grungy dialogue, ruthless choices, and investigative side quests, player
 - Integrated audio, shaders, lighting, and atmospheric effects
 - Developed final scenes, gameplay polish, and project deliverables
 
-Xiaoxuan Zhen (LDev)
+### Xiaoxuan Zhen (LDev)
 
 - Developed core gameplay systems (dialogue, interaction, quests)
 - Implemented UI systems (inventory, suspicion, timers, dialogue UI)
@@ -48,7 +48,7 @@ Xiaoxuan Zhen (LDev)
 - Integrated animations, pathfinding, and NPC behavior systems
 - Balanced gameplay mechanics and progression systems
 
-Eric Flores (LDes)
+### Eric Flores (LDes)
 
 - Designed and built game environments and level structure
 - Implemented AI systems and environmental interactions
@@ -59,8 +59,10 @@ Eric Flores (LDes)
 
 ## Credits
 
-CS 426 — Spring 2026
-Department of Computer Science, College of Engineering
+CS 426 — Spring 2026 
+<br>
+Department of Computer Science, College of Engineering 
+<br>
 University of Illinois Chicago
 
 ## References 
