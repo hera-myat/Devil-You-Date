@@ -1,14 +1,16 @@
-# 🖤 Devil You Date 🖤
+# 🖤❤️ Devil You Date ❤️🖤
 
 <img width="505" height="286" alt="Screenshot 2026-04-24 at 17 55 43" src="https://github.com/user-attachments/assets/5fd5ae76-8316-4f9e-8f0c-360d57a3f7bb" />
 
+<br>
 
 A 3D single-player psychological horror game developed in Unity. Enter a buddy hangout or a blind date with a seemingly ordinary human, unaware that a hidden demon feeds on past evil actions, manipulation, betrayal, toxic relationships, or violent crimes, and grows stronger in proportion to the severity of that corruption.
 
 Through grungy dialogue, ruthless choices, and investigative side quests, players must expose hidden identities while battling their own corruption before the demon awakens to devour the one most stained by their past. 
 
-- ❤️ Categories: Horror, Eerie, Disturbing, Psychological, Role-Play
-- ⚠️ Warning: Gore, Blood, Language, SFX
+❤️ Categories: Horror, Eerie, Disturbing, Psychological, Role-Play 
+<br>
+⚠️ Warning: Gore, Blood, Language, SFX
 
 ## Team Roles
 
