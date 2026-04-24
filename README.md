@@ -1,4 +1,4 @@
-# ❤️🖤 Devil You Date 🖤❤️
+# Devil You Date
 
 <div align="center">
   <img width="505" height="286" alt="Screenshot 2026-04-24 at 17 55 43" src="https://github.com/user-attachments/assets/5fd5ae76-8316-4f9e-8f0c-360d57a3f7bb" />
@@ -14,49 +14,56 @@ Through grungy dialogue, ruthless choices, and investigative side quests, player
 <br>
 ⚠️ Warning: Gore, Blood, Language, SFX
 
-## 🤍 Team Roles 🤍
+## Team Roles
 
 - Project Manager: [Khin Yuupar Myat](https://github.com/hera-myat)
 - Lead Developer: [Xiaoxuan Zhen](https://github.com/redbean0726)
 - Lead Designer: [Eric Flores](https://github.com/OminousRose)
 
-## 🩶 Related Links
+## Related Links
 
-Design Document: https://docs.google.com/document/d/1NpsuDNx9EAXijdP5lQm81GCR6kDnomZE3dDaVuw-JCI/edit?usp=sharing
+- Design Document: [DevilYouDate-CS426-DesignDocument](https://docs.google.com/document/d/1NpsuDNx9EAXijdP5lQm81GCR6kDnomZE3dDaVuw-JCI/edit?usp=sharing)
+- Public Demo: [DevilYouDate-3min-PublicDemo](https://drive.google.com/file/d/1uauEGCThdgbZ9p3y9VBCMgNn95VLJmJM/view?usp=sharing)
 
-Project Video: [coming soon]
+## ❤️ Game Release ❤️
+
+- Download Here: [Devil You Date](https://drive.google.com/file/d/1Kf1EmDcdv7A7hXFlSTvG5YnvBGo3RRPx/view?usp=drive_link)
+<br>
+*Thank you for downloading our game! Hope you enjoy “Devil You Date”.*
 
 ## Team Contributions
 
-Khin Yuupar Myat (PM)
+🐈‍⬛ Khin Yuupar Myat (PM)
 
-- Established and maintained project infrastructure (GitHub repository documentation, bug tracking, scheduling)
-- Led team meetings and coordinated development milestones
-- Designed and constructed core environments (asylum, church, date area, side quest zones)
-- Implemented player interactions, animations, and environmental storytelling elements
-- Integrated audio systems, shaders, lighting effects, and atmospheric assets
-- Developed key gameplay features, including side quests, collision interactions, and final scene sequences
-- Managed documentation updates and final project deliverables
+- Led project organization, documentation, scheduling, and GitHub management
+- Designed and built major environments (asylum, church, quest areas, and key narrative spaces)
+- Implemented core gameplay systems, including interactions, animations, and environmental storytelling
+- Integrated audio, shaders, lighting, and atmospheric effects
+- Developed final scenes, gameplay polish, and project deliverables
 
 Xiaoxuan Zhen (LDev)
 
-- Designed and implemented core gameplay systems, including dialogue, interaction mechanics, and side quests
-- Developed player systems such as inventory UI, suspicion mechanics, and timers
-- Implemented branching dialogue, relationship systems, and multiple endings
-- Integrated animations (Mecanim) and pathfinding systems for NPC behavior
-- Balanced gameplay progression, including penalties and reward systems tied to player decisions
-- Contributed to UI/UX improvements and sound effect integration
+- Developed core gameplay systems (dialogue, interaction, quests)
+- Implemented UI systems (inventory, suspicion, timers, dialogue UI)
+- Built a branching narrative system with multiple endings
+- Integrated animations, pathfinding, and NPC behavior systems
+- Balanced gameplay mechanics and progression systems
 
 Eric Flores (LDes)
 
-- Led level design development and environmental layout planning
-- Built and refined terrain, vegetation, and visual assets for immersive world-building
-- Developed AI elements, including ghost behavior and environmental interactions
-- Implemented UI systems such as minimap, controls display, and menu navigation
-- Designed and integrated shaders and visual polish elements
-- Created audio atmosphere through sound effects and background music integration
-- Enhanced user experience with features like cutscene controls, transitions, and credits system
+- Designed and built game environments and level structure
+- Implemented AI systems and environmental interactions
+- Developed UI systems (minimap, menus, controls, credits)
+- Enhanced visual quality with shaders, vegetation, and polish
+- Integrated audio systems (BGM, SFX, cutscene audio)
+- Improved user experience through UI/UX and cutscene controls
 
-## References
+## Credits
+
+CS 426 — Spring 2026
+Department of Computer Science, College of Engineering
+University of Illinois Chicago
+
+## References 
 
 --- updating soon ---
