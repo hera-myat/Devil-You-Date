@@ -26,7 +26,6 @@ Through grungy dialogue, ruthless choices, and investigative side quests, player
 ## ❤️ Game Release
 
 Download Here for Windows: [Devil You Date](https://drive.google.com/file/d/1Kf1EmDcdv7A7hXFlSTvG5YnvBGo3RRPx/view?usp=drive_link)  
-<br>
 Download Here for Mac: [Devil You Date](https://drive.google.com/file/d/181QliP8U2gA9SqdodXDV493-hL94xLz6/view?usp=drive_link)
 <br>
 
