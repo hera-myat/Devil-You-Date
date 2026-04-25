@@ -12,23 +12,23 @@ Through grungy dialogue, ruthless choices, and investigative side quests, player
 <br>
 ⚠️ Warning: Gore, Blood, Language, SFX
 
-## 🤍 Team Roles 🤍
+## 🤍 Team Roles
 
 - Project Manager: [Khin Yuupar Myat](https://github.com/hera-myat)
 - Lead Developer: [Xiaoxuan Zhen](https://github.com/redbean0726)
 - Lead Designer: [Eric Flores](https://github.com/OminousRose)
 
-## 🩶 Related Links 🩶
+## 🩶 Related Links
 
 - Design Document: [DevilYouDate-CS426-DesignDocument](https://docs.google.com/document/d/1NpsuDNx9EAXijdP5lQm81GCR6kDnomZE3dDaVuw-JCI/edit?usp=sharing)
 - Public Demo: [DevilYouDate-3min-PublicDemo](https://drive.google.com/file/d/1uauEGCThdgbZ9p3y9VBCMgNn95VLJmJM/view?usp=sharing)
 
-## ❤️ Game Release ❤️
+## ❤️ Game Release
 
 - Download Here: [Devil You Date](https://drive.google.com/file/d/1Kf1EmDcdv7A7hXFlSTvG5YnvBGo3RRPx/view?usp=drive_link)<br>
 *Thank you for downloading our game! Hope you enjoy “Devil You Date”.*
 
-## 🤍 Team Contributions 🤍
+## 🤍 Team Contributions
 
 ### 🕷️ Khin Yuupar Myat (PM)
 
@@ -55,7 +55,7 @@ Through grungy dialogue, ruthless choices, and investigative side quests, player
 - Integrated audio systems (BGM, SFX, cutscene audio)
 - Improved user experience through UI/UX and cutscene controls
 
-## 🩶 Credits 🩶
+## 🩶 Credits
 
 CS 426 — Spring 2026 
 <br>
@@ -63,6 +63,6 @@ Department of Computer Science, College of Engineering
 <br>
 University of Illinois Chicago
 
-## 🖤 References 🖤
+## 🖤 References
 
 --- updating soon ---
