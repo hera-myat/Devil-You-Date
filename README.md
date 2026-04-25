@@ -1,4 +1,4 @@
-# ❤️ 🖤 Devil You Date 🖤 ❤️
+# ❤️ 🖤 Devil You Date
 
 <img width="505" height="286" alt="Screenshot 2026-04-24 at 17 55 43" src="https://github.com/user-attachments/assets/5fd5ae76-8316-4f9e-8f0c-360d57a3f7bb" />
 
