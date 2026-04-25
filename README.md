@@ -58,7 +58,11 @@ Download Here: [Devil You Date](https://drive.google.com/file/d/1Kf1EmDcdv7A7hXF
 
 ## 🩶 Credits
 
-This is a coursework done in Spring 2026, CS 426, Department of Computer Science, College of Engineering, University of Illinois Chicago.
+CS 426 — Spring 2026 
+<br>
+Department of Computer Science, College of Engineering 
+<br>
+University of Illinois Chicago
 
 ## 🖤 References  
 
