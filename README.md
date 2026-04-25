@@ -25,8 +25,7 @@ Through grungy dialogue, ruthless choices, and investigative side quests, player
 
 ## ❤️ Game Release
 
-- Download Here: [Devil You Date](https://drive.google.com/file/d/1Kf1EmDcdv7A7hXFlSTvG5YnvBGo3RRPx/view?usp=drive_link)
-<br>
+- Download Here: [Devil You Date](https://drive.google.com/file/d/1Kf1EmDcdv7A7hXFlSTvG5YnvBGo3RRPx/view?usp=drive_link)<br>
 *Thank you for downloading our game! Hope you enjoy “Devil You Date”.*
 
 ## 🤍 Team Contributions
