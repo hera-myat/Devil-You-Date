@@ -25,6 +25,7 @@ Through grungy dialogue, ruthless choices, and investigative side quests, player
 
 ## ❤️ Game Release
 
+Both Windows and Mac Versions available!
 Download Here: [Devil You Date](https://hera-myat.itch.io/devil-you-date)
 <br>
 
