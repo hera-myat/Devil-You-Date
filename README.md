@@ -20,8 +20,8 @@ Through grungy dialogue, ruthless choices, and investigative side quests, player
 
 ## 🩶 Related Links
 
-- Design Document: [DevilYouDate-CS426-DesignDocument](https://docs.google.com/document/d/1NpsuDNx9EAXijdP5lQm81GCR6kDnomZE3dDaVuw-JCI/edit?usp=sharing)
-- Public Demo: [DevilYouDate-3min-PublicDemo](https://drive.google.com/file/d/1uauEGCThdgbZ9p3y9VBCMgNn95VLJmJM/view?usp=sharing)
+- Design Document: Limited Access
+- Public Demo: Limited Access
 
 ## ❤️ Game Release
 
