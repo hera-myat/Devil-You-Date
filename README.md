@@ -20,8 +20,9 @@ Through grungy dialogue, ruthless choices, and investigative side quests, player
 
 ## 🩶 Related Links
 
-- 🚫 Design Document: Limited Access!
-- 🚫 Public Demo: Limited Access!
+🚫 Design Document: Limited Access!
+<br>
+🚫 Public Demo: Limited Access!
 
 ## ❤️ Game Release
 
